@@ -1,25 +1,30 @@
 import { redirect } from "next/navigation";
 import * as zfd from "zod-form-data";
-import { auth } from "~/server/auth";
+import auth from "~/server/auth";
 import { db } from "~/server/db";
 import { posts } from "~/server/db/schema";
-import Editor from "./Editor";
+import Fieldset from "./Fieldset";
+import { headers } from "next/headers";
+import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 
 const schema = zfd.formData({
   content: zfd.text(),
+  tasg: zfd.repeatableOfType(zfd.text()),
 });
 
 async function action(data: FormData) {
   "use server";
 
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (session === null) {
     redirect("/");
   }
 
   await db.insert(posts).values({
-    content: (await schema.parseAsync(data)).content,
+    content: new QuillDeltaToHtmlConverter(JSON.parse((await schema.parseAsync(data)).content), {}).convert(),
     authorId: session.user.id,
   });
 
@@ -27,8 +32,11 @@ async function action(data: FormData) {
 }
 
 export default async function Draft() {
-  const session = await auth();
   const tags = await db.query.tags.findMany();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
 
   if (session === null) {
     redirect("/");
@@ -36,7 +44,7 @@ export default async function Draft() {
 
   return (
     <form action={action}>
-      <Editor />
+      <Fieldset tags={tags} />
     </form>
   );
 }

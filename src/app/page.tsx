@@ -1,15 +1,17 @@
 import { db } from "~/server/db";
 
 export default async function HomePage() {
-  const posts = await db.query.posts.findMany({ with: { author: true }});
-  
+  const posts = await db.query.posts.findMany({ with: { author: true } });
+
   return (
     <div>
-      <ul>
-        {posts.map(post => (
-          <li key={post.id}>{post.content} - {post.author.displayName ?? post.author.name}</li>
-        ))}
-      </ul>
+      {posts.map((post) => (
+        <div
+          key={post.id}
+          className="prose"
+          dangerouslySetInnerHTML={{ __html: post.content! }}
+        />
+      ))}
     </div>
   );
 }

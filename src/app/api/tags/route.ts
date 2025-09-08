@@ -2,11 +2,11 @@ import { db } from "~/server/db";
 import tagsObject from "./tags.json";
 import { tags as tagsTable } from "~/server/db/schema";
 
-interface Tags {
-  [key: string]: Tags;
+interface Tree {
+  [key: string]: Tree;
 }
 
-async function addTags(tags: Tags, parentId?: string) {
+async function addTags(tags: Tree, parentId?: string) {
   const keys = Object.keys(tags);
 
   if (keys.length <= 0) {
