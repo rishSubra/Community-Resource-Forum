@@ -1,15 +1,16 @@
+import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
-import auth from "~/server/auth";
+import { PiSignInBold } from "react-icons/pi";
 import devdog from "~/assets/devdog.png";
-import SignIn from "./SignIn";
-import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import Avatar from "./Avatar";
-import { headers } from "next/headers";
+import { getSessionUser } from "~/server/auth";
 
 export default async function Navigation() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+  const session = await getSessionUser({
+    with: {
+      profile: true,
+    },
   });
 
   return (
@@ -23,7 +24,7 @@ export default async function Navigation() {
       {session ? (
         <Dropdown.Root>
           <Dropdown.Trigger className="text-[2rem] leading-none">
-            <Avatar {...session.user} />
+            <Avatar {...session.user.profile} />
           </Dropdown.Trigger>
 
           <Dropdown.Portal>
@@ -37,7 +38,15 @@ export default async function Navigation() {
           </Dropdown.Portal>
         </Dropdown.Root>
       ) : (
-        <SignIn />
+        <Link
+          className="flex cursor-default items-center gap-1.5 rounded-sm border-b-2 border-sky-900 bg-sky-800 px-4 py-1 text-sm font-medium text-white shadow-sm ring-1 ring-sky-950 transition-colors hover:bg-sky-50 hover:text-sky-800 focus:mt-0.5 focus:border-b-0"
+          href="/sign-in"
+          prefetch={false}
+        >
+          <span className="contents">
+            Sign In <PiSignInBold />
+          </span>
+        </Link>
       )}
     </nav>
   );

@@ -1,47 +1,33 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { env } from "~/env";
+import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
 import { db } from "./db";
-import { profiles } from "./db/schema";
-import { nextCookies } from "better-auth/next-js";
+import { sessions } from "./db/schema";
 
-const auth = betterAuth({
-  plugins: [nextCookies()],
-  socialProviders: {
-    google: {
-      clientId: env.AUTH_GOOGLE_ID,
-      clientSecret: env.AUTH_GOOGLE_SECRET,
-      hd: "uga.edu",
-    },
-  },
-  database: drizzleAdapter(db, { provider: "mysql", usePlural: true }),
-  databaseHooks: {
-    user: {
-      create: {
-        async before(user) {
-          const [insertedProfile] = await db
-            .insert(profiles)
-            .values({
-              name: user.name,
-              image: user.image,
-            })
-            .$returningId();
+/**
+ * 
+ * @param include 
+ * @returns 
+ */
+export async function getSessionUser<
+  T extends Exclude<
+    ((Parameters<typeof db.query.sessions.findFirst>[0] & {})["with"] & {
+      user: {};
+    })["user"],
+    true
+  >,
+>(include?: T) {
+  const token = (await cookies()).get("session")?.value;
 
-          return {
-            data: {
-              ...user,
-              id: insertedProfile!.id,
-            },
-          };
-        },
-      },
-    },
-  },
-  advanced: {
-    database: {
-      generateId: false,
-    },
-  },
-});
+  if (!token) {
+    return null;
+  }
 
-export default auth;
+  const session = await db.query.sessions.findFirst({
+    where: eq(sessions.token, token),
+    with: {
+      user: include ?? true,
+    }
+  });
+
+  return session ?? null;
+}
