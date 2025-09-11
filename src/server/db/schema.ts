@@ -1,22 +1,23 @@
 import { createId } from "@paralleldrive/cuid2";
 import { SQL, sql } from "drizzle-orm";
 import {
-  check,
   foreignKey,
   index,
   mysqlTable,
   primaryKey,
-  text,
   timestamp,
   uniqueIndex,
   varchar,
-  type AnyMySqlColumn,
+  type AnyMySqlColumn
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm/relations";
 
 export const events = mysqlTable("event", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
-  organizerId: d.varchar({ length: 255 }).references(() => profiles.id),
+  organizerId: d
+    .varchar({ length: 255 })
+    .notNull()
+    .references(() => profiles.id),
   title: d.varchar({ length: 255 }).notNull(),
   start: d.datetime().notNull(),
   end: d.datetime().notNull(),
@@ -42,7 +43,7 @@ export const posts = mysqlTable(
 );
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
-  tagsToPosts: many(tagsToPosts),
+  tags: many(tagsToPosts),
   replies: many(replies),
   author: one(profiles, {
     fields: [posts.authorId],
@@ -58,7 +59,7 @@ export const replies = mysqlTable(
   "reply",
   (d) => ({
     id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
-    content: d.text(),
+    content: d.text().notNull(),
     authorId: d
       .varchar({ length: 255 })
       .notNull()
@@ -80,11 +81,16 @@ export const replies = mysqlTable(
   ],
 );
 
-export const repliesRelations = relations(replies, ({ one }) => ({
+export const repliesRelations = relations(replies, ({ one, many }) => ({
   post: one(posts, {
     fields: [replies.postId],
     references: [posts.id],
   }),
+  parent: one(replies, {
+    fields: [replies.parentId],
+    references: [replies.id],
+  }),
+  replies: many(replies),
   author: one(profiles, {
     fields: [replies.authorId],
     references: [profiles.id],
@@ -106,9 +112,14 @@ export const tags = mysqlTable(
   ],
 );
 
-export const tagsRelations = relations(tags, ({ many }) => ({
-  tagsToPosts: many(tagsToPosts),
-  subscribers: many(usersToTags),
+export const tagsRelations = relations(tags, ({ one, many }) => ({
+  posts: many(tagsToPosts),
+  subscribers: many(subscriptions),
+  parent: one(tags, {
+    fields: [tags.parentId],
+    references: [tags.id],
+  }),
+  children: many(tags),
 }));
 
 export const tagsToPosts = mysqlTable(
@@ -139,10 +150,11 @@ export const tagsToPostsRelations = relations(tagsToPosts, ({ one }) => ({
 
 export const profiles = mysqlTable("profile", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
-  name: d.varchar({ length: 255 }).notNull(),
   type: d.mysqlEnum(["user", "organization"]).notNull(),
-  displayName: d.varchar({ length: 255 }),
+  name: d.varchar({ length: 255 }).notNull(),
   image: d.varchar({ length: 255 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 }));
 
 export const profilesRelations = relations(profiles, ({ many }) => ({
@@ -164,7 +176,7 @@ export const users = mysqlTable(
       .references(() => profiles.id),
     email: varchar("email", { length: 255 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
   }),
   (t) => [uniqueIndex("email_idx").on(lower(t.email))],
 );
@@ -174,13 +186,13 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     fields: [users.id],
     references: [profiles.id],
   }),
-  subscriptions: many(usersToTags),
+  subscriptions: many(subscriptions),
   organizations: many(organizations),
   sessions: many(sessions),
 }));
 
-export const usersToTags = mysqlTable(
-  "users_to_tags",
+export const subscriptions = mysqlTable(
+  "subscription",
   (d) => ({
     userId: d
       .varchar({ length: 255 })
@@ -194,19 +206,19 @@ export const usersToTags = mysqlTable(
   (t) => [primaryKey({ columns: [t.userId, t.tagId] })],
 );
 
-export const usersToTagsRelations = relations(usersToTags, ({ one }) => ({
+export const subscriptionRelations = relations(subscriptions, ({ one }) => ({
   user: one(users, {
-    fields: [usersToTags.userId],
+    fields: [subscriptions.userId],
     references: [users.id],
   }),
   tag: one(tags, {
-    fields: [usersToTags.tagId],
+    fields: [subscriptions.tagId],
     references: [tags.id],
   }),
 }));
 
 export const organizations = mysqlTable(
-  "organizations",
+  "organization",
   (d) => ({
     organizationId: d
       .varchar({ length: 255 })
@@ -220,7 +232,7 @@ export const organizations = mysqlTable(
   }),
   (t) => [
     primaryKey({ columns: [t.organizationId, t.userId] }),
-    check("profile_is_organization", sql`${t.organizationId} = 'organization'`),
+    // TODO: how can we constrain organizationId to profiles only with `profile.type = 'organization'`?
   ],
 );
 

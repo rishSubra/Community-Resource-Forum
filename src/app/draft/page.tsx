@@ -66,7 +66,7 @@ export default async function Draft() {
             .map((rel) => rel.organization),
         ]}
       />
-      <SelectTags tags={tags} />
+      {/*<SelectTags tags={tags} />*/}
       <Editor />
 
       <button className="flex items-center gap-3 rounded-sm border-b-2 border-sky-900 bg-sky-800 px-6 py-1 text-lg font-medium text-white shadow-sm ring-1 ring-sky-950 transition-colors hover:bg-sky-50 hover:text-sky-800 focus:mt-0.5 focus:border-b-0">
