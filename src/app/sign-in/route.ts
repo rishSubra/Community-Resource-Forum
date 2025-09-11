@@ -7,7 +7,7 @@ export function GET(request: NextRequest) {
   const googleOAuth2 = new google.auth.OAuth2(
     env.AUTH_GOOGLE_ID,
     env.AUTH_GOOGLE_SECRET,
-    new URL("/api/auth/callback/google", request.nextUrl).toString(),
+    new URL("/api/auth", request.nextUrl).toString(),
   );
 
   redirect(
