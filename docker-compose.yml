@@ -33,11 +33,10 @@ services:
       - .env
     environment:
       # These values will be taken from .env;
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    # Persist the database data to a volume to prevent data loss.
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-devdogstest}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
     volumes:
       - db_data:/var/lib/mysql
     # Ensure that the database is healthy before allowing dependent services to start.
