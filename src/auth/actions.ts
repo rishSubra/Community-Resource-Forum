@@ -12,7 +12,7 @@ export async function __signInAction() {
   const googleOAuth2 = new google.auth.OAuth2(
     env.AUTH_GOOGLE_ID,
     env.AUTH_GOOGLE_SECRET,
-    new URL("/api/auth", String((await headers()).get("referer"))).toString(),
+    new URL("/api/auth/callback/google", String((await headers()).get("referer"))).toString(),
   );
 
   redirect(

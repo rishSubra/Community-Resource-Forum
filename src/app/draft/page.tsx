@@ -14,7 +14,7 @@ import SelectTags from "../../components/SelectTags";
 const schema = zfd.formData({
   authorId: zfd.text(),
   tagId: zfd.repeatableOfType(zfd.text()),
-  eventId: zfd.text().optional(),
+  eventId: zfd.text(z.string().optional()),
   content: zfd.text().transform((s, ctx) => {
     try {
       const obj: unknown = JSON.parse(s);
