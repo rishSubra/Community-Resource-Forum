@@ -19,7 +19,7 @@ services:
     # Link the next-app service to the database service.
     depends_on:
       - db
-    # Restart the container if it crashes.
+    # Limit the next-app to 3 attempts to restart if it crashes.
     restart: on-failure:3
 
   db:
@@ -32,15 +32,15 @@ services:
     env_file:
       - .env
     environment:
-      # These values will be taken from .env; include defaults here for clarity.
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-devdogstest}
-      MYSQL_USER: ${MYSQL_USER:-user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+      # These values will be taken from .env;
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     # Persist the database data to a volume to prevent data loss.
     volumes:
       - db_data:/var/lib/mysql
-    # Define a health check for the database.
+    # Ensure that the database is healthy before allowing dependent services to start.
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-puser"]
       interval: 10s
