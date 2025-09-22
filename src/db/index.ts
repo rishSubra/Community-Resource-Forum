@@ -9,7 +9,16 @@ async function getDB() {
     conn: Pool | undefined;
   };
 
-  const conn = globalForDb.conn ?? createPool({ uri: env.DATABASE_URL });
+  const conn =
+    globalForDb.conn ??
+    createPool({
+      host: env.MYSQL_HOST,
+      user: env.MYSQL_USER,
+      password: env.MYSQL_PASSWORD,
+      port: env.MYSQL_PORT,
+      database: env.MYSQL_DATABASE,
+    });
+
   const db = drizzle(conn, { schema, mode: "default" });
 
   if (env.NODE_ENV === "production") {
