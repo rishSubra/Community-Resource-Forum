@@ -46,10 +46,17 @@ COPY --from=base /app/package.json ./package.json
 COPY --from=base /app/next.config.js ./next.config.js
 COPY --from=base /app/src/env.js ./src/env.js
 
+# Copy Drizzle runtime config and schema so migrations can run in the runner image
+COPY --from=base /app/drizzle.config.json ./drizzle.config.json
+COPY --from=base /app/src/db ./src/db
+COPY --from=base /app/drizzle /app/drizzle
+
 # Expose the port used by Next.js
 EXPOSE 3000
 
 # Install netcat and use it to wait for the DB service before starting Next.js.
 RUN apk add --no-cache netcat-openbsd
+
 # Wait for DB, attempt to apply Drizzle schema, then start Next.js.
-CMD ["sh", "-c", "until nc -z ${DB_HOST:-db} ${DB_PORT:-3306}; do echo waiting for db; sleep 1; done; pnpm start"]
+
+CMD ["sh", "-c", "until nc -z ${DB_HOST:-db} ${DB_PORT:-3306}; do echo waiting for db; sleep 1; done; if [ \"${RUN_DB_PUSH}\" = \"true\" ]; then pnpm run db:push || echo 'drizzle push failed, continuing'; fi; pnpm start"]

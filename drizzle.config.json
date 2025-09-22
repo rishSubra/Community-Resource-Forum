@@ -4,5 +4,5 @@
   "dbCredentials": {
     "url": "mysql://root:password@db:3306/devdogstest"
   },
-  "tablesFilter": ["devdogstest_*"]
+  "tablesFilter": []
 }
