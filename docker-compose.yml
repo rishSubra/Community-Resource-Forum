@@ -1,0 +1,54 @@
+
+
+services:
+  next-app:
+    # Build the image from the Dockerfile in the current directory.
+    build: 
+      context: .
+      args:
+        AUTH_GOOGLE_ID: ${AUTH_GOOGLE_ID}
+        AUTH_GOOGLE_SECRET: ${AUTH_GOOGLE_SECRET}
+        DATABASE_URL: ${DATABASE_URL}
+    # Map port 3000 on the host to port 3000 in the container.
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+    # Link the next-app service to the database service.
+    depends_on:
+      - db
+    # Restart the container if it crashes.
+    restart: on-failure:3
+
+  db:
+    # Use the official MySQL image.
+    image: mysql:8.0
+    # Map port 3306 on the host to port 3306 in the container.
+    ports:
+      - "3306:3306"
+    # Define environment variables for the database.
+    env_file:
+      - .env
+    environment:
+      # These values will be taken from .env; include defaults here for clarity.
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-devdogstest}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    # Persist the database data to a volume to prevent data loss.
+    volumes:
+      - db_data:/var/lib/mysql
+    # Define a health check for the database.
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-puser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Restart the container if it crashes.
+    restart: on-failure:3
+
+# Define the volume for persistent data.
+volumes:
+  db_data:
