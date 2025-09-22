@@ -23,8 +23,8 @@
       "inputs": ["**/*.env.*"],
       "cache": false
     },
-    "db:dev": {
-      "dependsOn": [],
+    "db:push": {
+      "dependsOn": ["db:up"],
       "outputs": ["drizzle/**"]
     },
     "db:studio": {
@@ -33,10 +33,9 @@
       "cache": false
     },
     "dev:next": {
-      "dependsOn": ["db:up", "db:push"],
+      "dependsOn": ["db:up"],
       "persistent": true,
-      "cache": false,
-      "with": ["db:dev", "db:studio", "db:dev"]
+      "cache": false
     }
   }
 }
