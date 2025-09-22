@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { SQL, sql } from "drizzle-orm";
+import { type SQL, sql } from "drizzle-orm";
 import {
   foreignKey,
   index,

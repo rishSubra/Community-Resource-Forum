@@ -28,7 +28,7 @@ export default function SelectTags({ tags }: Props) {
       tag.name.toLowerCase().includes(query.toLowerCase()),
   );
 
-  const addSelection = useCallback((tag?: Tag) => {
+  const addSelection = useCallback((tag: Tag | null) => {
     if (tag) {
       setSelected((s) => [...s, tag]);
       setQuery("");
@@ -69,7 +69,7 @@ export default function SelectTags({ tags }: Props) {
 
         <Combobox
           immediate
-          value={null as unknown}
+          value={null as (Tag | null)}
           onChange={addSelection}
           onClose={() => setQuery("")}
         >
