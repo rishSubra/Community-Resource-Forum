@@ -9,11 +9,18 @@ export const env = createEnv({
   server: {
     AUTH_GOOGLE_ID: z.string(),
     AUTH_GOOGLE_SECRET: z.string(),
-    MYSQL_USER: z.string().default("root"),
-    MYSQL_PASSWORD: z.string(),
+    MYSQL_USER: (process.env.NODE_ENV === "development"
+      ? z.literal("root")
+      : z.string()
+    ).default("root"),
+    MYSQL_PASSWORD: z.string().default("password"),
     MYSQL_HOST: z.string().default("localhost"),
-    MYSQL_PORT: z.coerce.number().min(1).max(65536),
-    MYSQL_DATABASE: z.string(),
+    MYSQL_PORT: z.coerce.number().min(1).max(65536).default(3306),
+    MYSQL_DATABASE: z.string().default("devdogs"),
+    S3_PORT: z.coerce.number().min(1).max(65536).default(4566),
+    S3_REGION: z.string().default("us-east-1"),
+    S3_ACCESS_KEY_ID: z.string().default("test"),
+    S3_SECRET_ACCESS_KEY: z.string().default("test"),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -40,6 +47,10 @@ export const env = createEnv({
     MYSQL_HOST: process.env.MYSQL_HOST,
     MYSQL_PORT: process.env.MYSQL_PORT,
     MYSQL_DATABASE: process.env.MYSQL_DATABASE,
+    S3_PORT: process.env.S3_PORT,
+    S3_REGION: process.env.S3_REGION,
+    S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
+    S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
