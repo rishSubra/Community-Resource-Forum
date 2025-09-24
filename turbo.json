@@ -28,12 +28,12 @@
       "outputs": ["drizzle/**"]
     },
     "db:studio": {
-      "dependsOn": [],
+      "dependsOn": ["db:up"],
       "persistent": true,
       "cache": false
     },
     "dev:next": {
-      "dependsOn": ["db:up"],
+      "dependsOn": ["db:push"],
       "persistent": true,
       "cache": false
     }
