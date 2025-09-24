@@ -18,7 +18,7 @@
       "dependsOn": [],
       "cache": false
     },
-    "docker:up": {
+    "docker:ready": {
       "dependsOn": [],
       "inputs": ["**/*.env.*"],
       "cache": false
