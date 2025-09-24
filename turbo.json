@@ -18,17 +18,17 @@
       "dependsOn": [],
       "cache": false
     },
-    "db:up": {
+    "docker:up": {
       "dependsOn": [],
       "inputs": ["**/*.env.*"],
       "cache": false
     },
     "db:push": {
-      "dependsOn": ["db:up"],
+      "dependsOn": ["docker:ready"],
       "outputs": ["drizzle/**"]
     },
     "db:studio": {
-      "dependsOn": ["db:up"],
+      "dependsOn": ["docker:ready"],
       "persistent": true,
       "cache": false
     },
