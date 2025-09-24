@@ -11,7 +11,7 @@
     "db:push": "pnpm db:generate && pnpm db:migrate",
     "db:studio": "drizzle-kit studio",
     "docker:build": "docker-compose create --pull=always --build --remove-orphans",
-    "docker:ready": "docker-compose up --wait",
+    "docker:ready": "docker-compose up --build --wait",
     "docker:reset": "docker-compose down -v",
     "dev": "turbo run dev:next db:studio --continue",
     "dev:next": "next dev --turbo",
