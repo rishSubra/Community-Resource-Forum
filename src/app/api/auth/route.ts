@@ -1,1 +1,1 @@
-export { handleOAuthRedirect as GET } from "~/auth/server";
+export { handleOAuthRedirect as GET } from "~/server/auth";

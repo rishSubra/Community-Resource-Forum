@@ -15,7 +15,7 @@ import {
   PiCheckBold,
   PiLinkBold,
 } from "react-icons/pi";
-import type { events } from "~/db/schema";
+import type { events } from "~/server/db/schema";
 import formatEventTime from "~/lib/formatEventTime";
 
 type Event = (typeof events)["$inferSelect"];

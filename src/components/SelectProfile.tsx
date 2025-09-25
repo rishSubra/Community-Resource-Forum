@@ -10,7 +10,7 @@ import {
 import { useCallback, useId, useState } from "react";
 import { PiCaretDownBold, PiCheckBold, PiUsersBold } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
-import type { profiles } from "~/db/schema";
+import type { profiles } from "~/server/db/schema";
 
 type Profile = (typeof profiles)["$inferSelect"];
 

@@ -36,6 +36,15 @@
       "dependsOn": ["db:push"],
       "persistent": true,
       "cache": false
+    },
+    "lint": {
+      "dependsOn": []
+    },
+    "lint:fix": {
+      "dependsOn": []
+    },
+    "typecheck": {
+      "dependsOn": []
     }
   }
 }

@@ -7,7 +7,7 @@ import {
   isSameMonth,
   format,
 } from "date-fns";
-import type { events } from "~/db/schema";
+import type { events } from "~/server/db/schema";
 
 type Event = (typeof events)["$inferSelect"];
 

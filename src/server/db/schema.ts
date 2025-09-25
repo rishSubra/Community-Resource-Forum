@@ -43,6 +43,7 @@ export const posts = mysqlTable(
       .notNull()
       .references(() => profiles.id),
     eventId: d.varchar({ length: 255 }).references(() => events.id),
+    likeCount: d.int().notNull().default(0),
     createdAt: d.timestamp().defaultNow().notNull(),
     updatedAt: d.timestamp().onUpdateNow(),
   }),
@@ -61,6 +62,21 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
     references: [events.id],
   }),
 }));
+
+export const likes = mysqlTable(
+  "like",
+  (d) => ({
+    userId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => users.id),
+    postId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => posts.id),
+  }),
+  (t) => [primaryKey({ columns: [t.userId, t.postId] })],
+);
 
 export const replies = mysqlTable(
   "reply",

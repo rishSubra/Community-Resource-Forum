@@ -1,24 +1,36 @@
 import { getDate } from "date-fns";
+import { and, asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import {
   PiCalendarBlank,
   PiChatCircleTextBold,
   PiDotsThreeBold,
-  PiHeartBold,
   PiShareFatBold,
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
-import { db } from "~/db";
+import LikeButton from "~/components/LikeButton";
 import formatEventTime from "~/lib/formatEventTime";
-
+import { getSessionUser } from "~/server/auth";
+import { db } from "~/server/db";
+import { events, likes, posts, profiles } from "~/server/db/schema";
 export default async function HomePage() {
-  const posts = await db.query.posts.findMany({
-    with: { author: true, event: true },
-  });
+  const session = await getSessionUser();
+  const results = await db
+    .select()
+    .from(posts)
+    .orderBy(asc(posts.createdAt))
+    .limit(20)
+    .offset(0)
+    .leftJoin(profiles, eq(profiles.id, posts.authorId))
+    .leftJoin(events, eq(posts.eventId, events.id))
+    .leftJoin(
+      likes,
+      and(eq(likes.userId, session?.userId ?? ""), eq(likes.postId, posts.id)),
+    );
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-6 py-6">
-      {posts.map((post) => (
+      {results.map(({ post, profile: author, event, like }) => (
         <article
           key={post.id}
           className="rounded-md border border-gray-300 bg-white px-2"
@@ -26,16 +38,16 @@ export default async function HomePage() {
           <div className="flex flex-col gap-2 px-2 py-4">
             <div className="flex items-start gap-3">
               <Link
-                href={`/users/${post.author.id}`}
+                href={`/users/${author!.id}`}
                 className="group flex flex-1 items-center gap-3 text-3xl"
               >
-                <Avatar {...post.author} />
+                <Avatar {...author!} />
                 <span className="flex flex-col gap-0.5">
                   <span className="text-sm leading-none font-bold group-hover:underline">
-                    {post.author.name}
+                    {author!.name}
                   </span>
                   <span className="text-xs leading-none text-gray-600 capitalize">
-                    {post.author.type}
+                    {author!.type}
                   </span>
                 </span>
               </Link>
@@ -52,7 +64,7 @@ export default async function HomePage() {
               />
             )}
 
-            {post.event && (
+            {event && (
               <Link
                 className="mt-3 flex flex-1 items-center gap-3 rounded-sm border border-gray-300 bg-gray-50 px-2 py-1.5 text-xl text-black shadow-xs"
                 href={`/events/${post.eventId}`}
@@ -60,18 +72,18 @@ export default async function HomePage() {
                 <span className="relative">
                   <PiCalendarBlank />
                   <span className="absolute inset-0 top-1/2 w-full -translate-y-1/2 pt-px text-center text-[0.55rem] font-bold">
-                    {getDate(post.event.start)}
+                    {getDate(event.start)}
                   </span>
                 </span>
 
-                <span className="flex flex-1 flex-col gap-0.5">
-                  <span className="text-sm/[1]">{post.event.title}</span>
+                <span className="flex flex-1 flex-col min-w-0">
+                  <span className="text-sm/[1.25] -mt-0.5 overflow-x-hidden overflow-ellipsis">{event.title}</span>
                   <span className="text-[0.6rem]/[1] font-bold text-gray-600">
-                    {formatEventTime(post.event)}
+                    {formatEventTime(event)}
                   </span>
                 </span>
 
-                <button className="rounded-xs px-2 text-xs font-bold text-sky-800 uppercase ring-sky-800/50 py-0.5 hover:bg-sky-100 hover:ring">
+                <button className="rounded-xs px-2 py-0.5 text-xs font-bold text-sky-800 uppercase ring-sky-800/50 hover:bg-sky-100 hover:ring">
                   RSVP
                 </button>
               </Link>
@@ -79,17 +91,18 @@ export default async function HomePage() {
           </div>
 
           <div className="flex justify-between gap-2 border-t border-t-gray-300 px-2 py-3 text-gray-700">
-            <button className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-rose-100">
-              <PiHeartBold />
-              <span className="text-xs font-semibold">945</span>
-            </button>
+            <LikeButton
+              postId={post.id}
+              likeCount={post.likeCount}
+              likeStatus={!!like}
+            />
             <button className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-green-100">
               <PiChatCircleTextBold />
-              <span className="text-xs font-semibold">33</span>
+              {/* <span className="text-xs font-semibold">33</span> */}
             </button>
             <button className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-sky-100">
               <PiShareFatBold />
-              <span className="text-xs font-semibold">12</span>
+              {/* <span className="text-xs font-semibold">12</span> */}
             </button>
           </div>
         </article>

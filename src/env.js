@@ -9,6 +9,17 @@ export const env = createEnv({
   server: {
     AUTH_GOOGLE_ID: z.string(),
     AUTH_GOOGLE_SECRET: z.string(),
+    AUTH_REDIRECT_URL: z
+      .string()
+      .default("/api/auth/callback/google")
+      .transform((path) =>
+        new URL(
+          path,
+          process.env.NODE_ENV === "development"
+            ? `http://localhost:${process.env.PORT}`
+            : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+        ).toString(),
+      ),
     MYSQL_USER: (process.env.NODE_ENV === "development"
       ? z.literal("root")
       : z.string()
@@ -42,6 +53,7 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
+    AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_PATH,
     MYSQL_USER: process.env.MYSQL_USER,
     MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
     MYSQL_HOST: process.env.MYSQL_HOST,

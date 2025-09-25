@@ -3,7 +3,6 @@ import "~/styles/globals.css";
 import { type Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
 import Navigation from "../components/Navigation";
-import { AuthProvider } from "~/auth/client";
 
 export const metadata: Metadata = {};
 
@@ -18,13 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sans.variable}`}>
       <body className="flex min-h-screen flex-col">
-        <AuthProvider>
-          <Navigation />
-          <main className="flex-1 bg-gray-100">
-
-            {children}
-          </main>
-        </AuthProvider>
+        <Navigation />
+        <main className="flex-1 bg-gray-100">{children}</main>
       </body>
     </html>
   );

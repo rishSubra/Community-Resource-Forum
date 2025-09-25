@@ -3,10 +3,21 @@ import { google } from "googleapis";
 import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
-import { db } from "~/db";
-import { profiles, sessions, users } from "~/db/schema";
+import { db } from "~/server/db";
+import { profiles, sessions, users } from "~/server/db/schema";
 import { env } from "~/env";
 
+export const googleOAuth2 = new google.auth.OAuth2(
+  env.AUTH_GOOGLE_ID,
+  env.AUTH_GOOGLE_SECRET,
+  env.AUTH_REDIRECT_URL,
+);
+
+/**
+ * Gets the currently signed in user.
+ * @param include Specify data to include or exclude for the signed-in user using a Drizzle soft-relation query.
+ * @returns `null` if the user is not signed in, or an object with user data if the user is signed in.
+ */
 export async function getSessionUser<
   T extends Exclude<
     ((Parameters<typeof db.query.sessions.findFirst>[0] & {})["with"] & {
@@ -33,12 +44,6 @@ export async function getSessionUser<
 }
 
 export async function handleOAuthRedirect(request: NextRequest) {
-  const googleOAuth2 = new google.auth.OAuth2(
-    env.AUTH_GOOGLE_ID,
-    env.AUTH_GOOGLE_SECRET,
-    new URL("/api/auth/callback/google", request.nextUrl).toString(),
-  );
-
   const code = request.nextUrl.searchParams.get("code");
 
   if (code === null) {
@@ -107,24 +112,4 @@ export async function handleOAuthRedirect(request: NextRequest) {
   console.log(insertedSession.token);
   (await cookies()).set("session", insertedSession.token);
   redirect("/");
-}
-
-export async function handleSignIn(request: NextRequest) {
-  const googleOAuth2 = new google.auth.OAuth2(
-    env.AUTH_GOOGLE_ID,
-    env.AUTH_GOOGLE_SECRET,
-    new URL("/api/auth/callback/google", request.nextUrl).toString(),
-  );
-
-  redirect(
-    googleOAuth2.generateAuthUrl({
-      access_type: "online",
-      hd: "uga.edu",
-      include_granted_scopes: true,
-      scope: [
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email",
-      ],
-    }),
-  );
 }

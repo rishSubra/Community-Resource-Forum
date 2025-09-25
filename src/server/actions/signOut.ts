@@ -1,10 +1,12 @@
+"use server";
+
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { db } from "~/server/db";
-import { sessions } from "~/server/db/schema";
+import { db } from "../db";
+import { sessions } from "../db/schema";
 
-export async function GET() {
+export default async function signOut() {
   const jar = await cookies();
   const token = jar.get("session")?.value;
 
