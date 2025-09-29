@@ -21,7 +21,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
     "postinstall": "pnpm docker:reset && pnpm docker:build",
-    "prettier": "prettier -w",
+    "prettier": "prettier -w .",
     "preview": "next build && next start",
     "start": "next start",
     "sync-upstream": "git fetch && git branch | grep -Po '\\Kfeature/.*' | xargs -i sh -c 'git checkout {} && git pull upstream main && git push upstream {}'",
