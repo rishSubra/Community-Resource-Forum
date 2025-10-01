@@ -11,7 +11,7 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["lint:fix", "db:migrate"],
+      "dependsOn": ["db:migrate"],
       "outputs": [".next/**"]
     },
     "check": {
