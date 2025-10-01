@@ -17,7 +17,7 @@ export const env = createEnv({
           path,
           process.env.NODE_ENV === "development"
             ? `http://localhost:3000`
-            : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
+            : `https://${process.env.VERCEL_ENV === "preview" ? process.env.VERCEL_BRANCH_URL : process.env.VERCEL_PROJECT_PRODUCTION_URL}`,
         ).toString(),
       ),
     MYSQL_USER: (process.env.NODE_ENV === "development"
