@@ -53,11 +53,11 @@ export default async function HomePage() {
                 </span>
               </Link>
 
+              <FlagButton postId={post.id} userId={session?.userId ?? ""} />
+
               <button className="-m-0.5 rounded-full p-0.5 hover:bg-gray-200">
                 <PiDotsThreeBold />
               </button>
-
-              <FlagButton postId={post.id} userId={session?.userId ?? ""} />
             </div>
 
             {post.content && (
