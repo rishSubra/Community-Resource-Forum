@@ -8,6 +8,7 @@ import {
   PiShareFatBold,
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
+import FlagButton from "~/components/FlagButton";
 import LikeButton from "~/components/LikeButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
@@ -55,6 +56,8 @@ export default async function HomePage() {
               <button className="-m-0.5 rounded-full p-0.5 hover:bg-gray-200">
                 <PiDotsThreeBold />
               </button>
+
+              <FlagButton postId={post.id} userId={session?.userId ?? ""} />
             </div>
 
             {post.content && (
@@ -76,8 +79,10 @@ export default async function HomePage() {
                   </span>
                 </span>
 
-                <span className="flex flex-1 flex-col min-w-0">
-                  <span className="text-sm/[1.25] -mt-0.5 overflow-x-hidden overflow-ellipsis">{event.title}</span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="-mt-0.5 overflow-x-hidden text-sm/[1.25] overflow-ellipsis">
+                    {event.title}
+                  </span>
                   <span className="text-[0.6rem]/[1] font-bold text-gray-600">
                     {formatEventTime(event)}
                   </span>
