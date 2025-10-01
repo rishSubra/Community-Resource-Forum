@@ -11,7 +11,7 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["lint:fix", "typecheck"],
+      "dependsOn": ["lint:fix", "typecheck", "db:migrate"],
       "outputs": [".next/**"]
     },
     "check": {
@@ -44,6 +44,9 @@
       "dependsOn": []
     },
     "typecheck": {
+      "dependsOn": []
+    },
+    "migrate": {
       "dependsOn": []
     }
   }
