@@ -91,12 +91,14 @@ export default async function Draft() {
         return;
       }
 
-      await tx.insert(tagsToPosts).values(
-        tags.map((tagId) => ({
-          tagId,
-          postId: insertedPost.id,
-        })),
-      );
+      if (tags.length > 0) {
+        await tx.insert(tagsToPosts).values(
+          tags.map((tagId) => ({
+            tagId,
+            postId: insertedPost.id,
+          })),
+        );
+      }
     });
 
     redirect("/");
@@ -117,7 +119,7 @@ export default async function Draft() {
   return (
     <form
       action={action}
-      className="flex flex-col items-center gap-y-6 px-8 py-6 pb-24 bg-gray-50 mx-auto"
+      className="mx-auto flex flex-col items-center gap-y-6 bg-gray-50 px-8 py-6 pb-24"
     >
       <h1 className="text-2xl font-bold">Create a Post</h1>
 
