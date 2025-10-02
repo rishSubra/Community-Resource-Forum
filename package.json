@@ -22,7 +22,7 @@
     "postinstall": "pnpm docker:reset && pnpm docker:build",
     "preview": "next build && next start",
     "start": "next start",
-    "sync-upstream": "git fetch && git branch | grep -Po '\\Kfeature/.*' | xargs -i sh -c 'git checkout {} && git pull upstream main && git push upstream {}'",
+    "sync-upstream": "git fetch && git branch | grep -Po '\\Kfeature/.*' | xargs -i sh -c 'git checkout upstream/{} && git pull upstream main && git push upstream {}'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
