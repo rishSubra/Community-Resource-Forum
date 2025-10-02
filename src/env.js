@@ -11,7 +11,7 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: z.string(),
     AUTH_REDIRECT_URL: z
       .string()
-      .default("https://localhost:3000/api/auth/callback/google"),
+      .default("http://localhost:3000/api/auth/callback/google"),
     MYSQL_USER: (process.env.NODE_ENV === "development"
       ? z.literal("root")
       : z.string()
