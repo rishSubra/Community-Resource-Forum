@@ -18,7 +18,7 @@ export const env = createEnv({
     ).default("root"),
     MYSQL_PASSWORD: z.string().default("password"),
     MYSQL_HOST: z.string().default("localhost"),
-    MYSQL_PORT: z.coerce.number().min(1).max(65536).default(3306),
+    MYSQL_PORT: z.coerce.number().min(1).max(65536).default(25060),
     MYSQL_DATABASE: z.string().default("devdogs"),
     S3_PORT: z.coerce.number().min(1).max(65536).default(4566),
     S3_REGION: z.string().default("us-east-1"),

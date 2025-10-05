@@ -11,44 +11,28 @@
     "AUTH_GOOGLE_SECRET"
   ],
   "tasks": {
+    "db:generate": {
+      "dependsOn": [],
+      "outputs": ["drizzle/**/*"]
+    },
     "build": {
-      "dependsOn": ["db:migrate"],
+      "dependsOn": ["db:generate"],
       "outputs": [".next/**"]
     },
-    "check": {
+    "Next.js": {
       "dependsOn": [],
-      "cache": false
-    },
-    "docker:ready": {
-      "dependsOn": [],
-      "inputs": ["**/*.env.*"],
-      "cache": false
-    },
-    "db:push": {
-      "dependsOn": ["docker:ready"],
-      "outputs": ["drizzle/**"],
-      "cache": false
-    },
-    "db:studio": {
-      "dependsOn": ["docker:ready"],
       "persistent": true,
       "cache": false
     },
-    "dev:next": {
-      "dependsOn": ["db:push"],
+    "Drizzle Studio": {
+      "dependsOn": [],
       "persistent": true,
       "cache": false
-    },
-    "lint": {
-      "dependsOn": []
     },
     "lint:fix": {
       "dependsOn": []
     },
     "typecheck": {
-      "dependsOn": []
-    },
-    "migrate": {
       "dependsOn": []
     }
   }
