@@ -15,7 +15,7 @@
     "docker:reset": "docker compose down -v",
     "dev": "pnpm docker:ready && pnpm db:push && turbo run Next.js Drizzle\\ Studio",
     "Next.js": "next dev --turbo",
-    "Drizzle Studio": "drizzle-kit studio",
+    "Drizzle-Studio": "drizzle-kit studio",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "lint": "eslint src",
