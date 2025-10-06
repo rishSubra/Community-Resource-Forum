@@ -11,22 +11,14 @@ export const env = createEnv({
     AUTH_GOOGLE_SECRET: z.string(),
     AUTH_REDIRECT_URL: z
       .string()
-      .default("/api/auth/callback/google")
-      .transform((path) =>
-        new URL(
-          path,
-          process.env.NODE_ENV === "development"
-            ? `http://localhost:3000`
-            : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`,
-        ).toString(),
-      ),
+      .default("http://localhost:3000/api/auth/callback/google"),
     MYSQL_USER: (process.env.NODE_ENV === "development"
       ? z.literal("root")
       : z.string()
     ).default("root"),
     MYSQL_PASSWORD: z.string().default("password"),
     MYSQL_HOST: z.string().default("localhost"),
-    MYSQL_PORT: z.coerce.number().min(1).max(65536).default(3306),
+    MYSQL_PORT: z.coerce.number().min(1).max(65536).default(25060),
     MYSQL_DATABASE: z.string().default("devdogs"),
     S3_PORT: z.coerce.number().min(1).max(65536).default(4566),
     S3_REGION: z.string().default("us-east-1"),
@@ -53,7 +45,7 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-    AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_PATH,
+    AUTH_REDIRECT_URL: process.env.AUTH_REDIRECT_URL,
     MYSQL_USER: process.env.MYSQL_USER,
     MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
     MYSQL_HOST: process.env.MYSQL_HOST,
