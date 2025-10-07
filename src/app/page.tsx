@@ -7,10 +7,10 @@ import {
   PiChatCircleTextBold,
   PiDotsThreeBold,
   PiHash,
-  PiShareFatBold,
-  PiXBold,
+  PiXBold
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
+import ShareButton from "~/components/ShareButton";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
@@ -237,10 +237,9 @@ export default async function HomePage({
                 </span>
               </Link>
 
-              <button className="flex items-center gap-2 rounded-full px-2 py-1 leading-none hover:bg-sky-100 hover:ring hover:ring-sky-800">
-                <PiShareFatBold />
-                <span className="text-xs font-semibold">Share</span>
-              </button>
+              <ShareButton
+                link={`https://community-resource-forum.vercel.app/discussion/${post.id}`}
+              />
 
               <div className="ml-auto text-xs">
                 <VoteButton
