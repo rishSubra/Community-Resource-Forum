@@ -8,7 +8,9 @@ import {
   PiShareFatBold,
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
+import FlagButton from "~/components/FlagButton";
 import LikeButton from "~/components/LikeButton";
+import ShareButton from "~/components/ShareButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
 import { db } from "~/server/db";
@@ -52,6 +54,8 @@ export default async function HomePage() {
                 </span>
               </Link>
 
+              <FlagButton postId={post.id} userId={session?.userId ?? ""} />
+
               <button className="-m-0.5 rounded-full p-0.5 hover:bg-gray-200">
                 <PiDotsThreeBold />
               </button>
@@ -76,8 +80,10 @@ export default async function HomePage() {
                   </span>
                 </span>
 
-                <span className="flex flex-1 flex-col min-w-0">
-                  <span className="text-sm/[1.25] -mt-0.5 overflow-x-hidden overflow-ellipsis">{event.title}</span>
+                <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="-mt-0.5 overflow-x-hidden text-sm/[1.25] overflow-ellipsis">
+                    {event.title}
+                  </span>
                   <span className="text-[0.6rem]/[1] font-bold text-gray-600">
                     {formatEventTime(event)}
                   </span>
@@ -100,10 +106,9 @@ export default async function HomePage() {
               <PiChatCircleTextBold />
               {/* <span className="text-xs font-semibold">33</span> */}
             </button>
-            <button className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-sky-100">
-              <PiShareFatBold />
-              {/* <span className="text-xs font-semibold">12</span> */}
-            </button>
+            <ShareButton
+              link={`https://community-resource-forum.vercel.app/events/${post.eventId}`}
+            />
           </div>
         </article>
       ))}
