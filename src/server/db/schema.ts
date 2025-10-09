@@ -12,6 +12,7 @@ import {
   type AnyMySqlColumn,
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm/relations";
+import { lower } from "./utils";
 
 export const events = mysqlTable("event", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
@@ -102,7 +103,6 @@ export const comments = mysqlTable(
     id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
     content: d.text().notNull(),
     score: d.int().notNull().default(0),
-    depth: d.int().notNull(),
     authorId: d
       .varchar({ length: 255 })
       .notNull()
@@ -218,10 +218,6 @@ export const profilesRelations = relations(profiles, ({ many }) => ({
   posts: many(posts),
   events: many(events),
 }));
-
-export function lower(email: AnyMySqlColumn): SQL {
-  return sql`(lower(${email}))`;
-}
 
 export const users = mysqlTable(
   "user",

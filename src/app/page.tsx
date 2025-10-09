@@ -81,11 +81,14 @@ export default async function HomePage({
     .limit(20)
     .innerJoin(profiles, eq(profiles.id, posts.authorId))
     .leftJoin(tagsToPosts, eq(tagsToPosts.postId, posts.id))
-    .leftJoin(tags, eq(tagsToPosts.tagId, tags.id))
-    .leftJoin(events, eq(posts.eventId, events.id))
+    .leftJoin(tags, eq(tags.id, tagsToPosts.tagId))
+    .leftJoin(events, eq(events.id, posts.eventId))
     .leftJoin(
       postVotes,
-      and(eq(postVotes.userId, session?.userId ?? ""), eq(postVotes.postId, posts.id)),
+      and(
+        eq(postVotes.userId, session?.userId ?? ""),
+        eq(postVotes.postId, posts.id),
+      ),
     )
     .then((queryResponse) =>
       queryResponse.reduce((results, { post, author, event, vote, tag }) => {
@@ -138,9 +141,8 @@ export default async function HomePage({
           ))}
         </h1>
       )}
-      {postsResult
-        .values()
-        .map(({ post, author, event, vote, tags }) => (
+      {Array.from(postsResult.values()).map(
+        ({ post, author, event, vote, tags }) => (
           <article
             key={post.id}
             className="rounded-md border border-gray-300 bg-white px-2"
@@ -203,50 +205,54 @@ export default async function HomePage({
             </div>
 
             <div className="flex flex-wrap items-center justify-start gap-y-1 pb-2 text-xs">
-              {tags
-                .values()
-                .map((tag) => (
-                  <Link
-                    key={tag.id}
-                    className="line-clamp-1 flex items-center justify-center gap-0.5 px-2 py-0.5 text-nowrap overflow-ellipsis text-sky-900/70 hover:bg-sky-50 hover:text-sky-900 hover:shadow-xs"
-                    href={{
-                      query: {
-                        t: tagParam.includes(tag.id)
-                          ? tagParam
-                          : [tag.id, ...tagParam],
-                      },
-                    }}
-                  >
-                    <PiHash />
-                    {tag.name}
-                  </Link>
-                ))
-                .toArray()}
+              {Array.from(tags.values()).map((tag) => (
+                <Link
+                  key={tag.id}
+                  className="line-clamp-1 flex items-center justify-center gap-0.5 px-2 py-0.5 text-nowrap overflow-ellipsis text-sky-900/70 hover:bg-sky-50 hover:text-sky-900 hover:shadow-xs"
+                  href={{
+                    query: {
+                      t: tagParam.includes(tag.id)
+                        ? tagParam
+                        : [tag.id, ...tagParam],
+                    },
+                  }}
+                >
+                  <PiHash />
+                  {tag.name}
+                </Link>
+              ))}
               <p className="ml-auto block px-2 text-nowrap text-gray-500">
                 {formatDistanceToNowStrict(post.createdAt)} ago
               </p>
             </div>
 
-            <div className="flex items-center gap-2 border-t border-t-gray-300 px-2 py-3 text-gray-700">
+            <div className="flex items-center gap-2 border-t border-t-gray-300 py-3 pr-2 pl-1 text-gray-700">
               <Link
-                className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-green-100"
-                href={`/discussion/${post.id}`}
+                className="flex items-center gap-2 rounded-full px-2 py-1 leading-none hover:bg-sky-100 hover:ring hover:ring-sky-800"
+                href={`/discussion/${post.id}?comment`}
               >
                 <PiChatCircleTextBold />
-                <span className="text-xs font-semibold">0</span>
+                <span className="text-xs font-semibold">
+                  {post.commentCount}
+                </span>
               </Link>
-              <button className="flex items-center gap-2 rounded-sm px-2 py-1 leading-none hover:bg-sky-100">
+
+              <button className="flex items-center gap-2 rounded-full px-2 py-1 leading-none hover:bg-sky-100 hover:ring hover:ring-sky-800">
                 <PiShareFatBold />
-                {/* <span className="text-xs font-semibold">12</span> */}
+                <span className="text-xs font-semibold">Share</span>
               </button>
 
-              <div className="ml-auto">
-              <VoteButton postId={post.id} score={post.score} vote={vote} />
+              <div className="ml-auto text-xs">
+                <VoteButton
+                  target={{ postId: post.id }}
+                  score={post.score}
+                  value={vote}
+                />
               </div>
             </div>
           </article>
-        ))
-        .toArray()}
+        ),
+      )}
       {postsResult.size === 0 && (
         <p className="max-w-prose text-center text-sm text-gray-600">
           There aren&rsquo;t any posts to display yet. Try signing in and

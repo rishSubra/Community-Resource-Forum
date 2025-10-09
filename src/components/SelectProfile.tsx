@@ -16,7 +16,7 @@ type Profile = (typeof profiles)["$inferSelect"];
 
 interface Props {
   inputName: string;
-  profiles: [Profile, ...Profile[]];
+  profiles: Readonly<[Profile, ...Profile[]]>;
 }
 
 export default function SelectProfile({ inputName, profiles }: Props) {

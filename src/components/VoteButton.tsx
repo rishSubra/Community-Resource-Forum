@@ -6,23 +6,17 @@ import {
   PiArrowCircleDown,
   PiArrowCircleDownFill,
   PiArrowCircleUp,
-  PiArrowCircleUpBold,
+  PiArrowCircleUpDuotone,
   PiArrowCircleUpFill,
-  PiArrowFatDownBold,
-  PiArrowFatDownFill,
-  PiArrowFatUpBold,
-  PiArrowFatUpFill,
+  PiClockAfternoon,
+  PiSmileyNervous,
+  PiSmileyXEyes,
+  PiTrash,
 } from "react-icons/pi";
 import vote from "~/server/actions/vote";
-import type { votes } from "~/server/db/schema";
+import type { postVotes } from "~/server/db/schema";
 
-interface Props {
-  postId: string;
-  score: number;
-  vote: typeof votes.$inferSelect.value | null;
-}
-
-function valueOf(vote?: typeof votes.$inferSelect.value | null) {
+function valueOf(vote?: typeof postVotes.$inferSelect.value | null) {
   switch (vote) {
     case "up":
       return 1;
@@ -35,7 +29,13 @@ function valueOf(vote?: typeof votes.$inferSelect.value | null) {
   }
 }
 
-export default function VoteButton({ postId, ...defaultState }: Props) {
+interface Props {
+  score: number;
+  value: typeof postVotes.$inferSelect.value | null;
+  target: { postId: string } | { commentId: string };
+}
+
+export default function VoteButton({ target, ...defaultState }: Props) {
   const [formState, formAction, pending] = useActionState(vote, defaultState);
   const [optimisticState, setOptimisticState] = useState(defaultState);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -45,12 +45,12 @@ export default function VoteButton({ postId, ...defaultState }: Props) {
     (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
       setDialogOpen(false);
 
-      const vote = (e.nativeEvent.submitter?.getAttribute("value") ??
-        null) as Props["vote"];
+      const value = (e.nativeEvent.submitter?.getAttribute("value") ??
+        null) as Props["value"];
 
       setOptimisticState({
-        vote,
-        score: formState.score + valueOf(vote) - valueOf(formState.vote),
+        value,
+        score: formState.score + valueOf(value) - valueOf(formState.value),
       });
     },
     [formState],
@@ -59,15 +59,20 @@ export default function VoteButton({ postId, ...defaultState }: Props) {
   return (
     <form
       action={formAction}
-      className="flex cursor-default items-center gap-1 rounded-sm"
+      className="flex cursor-default items-center gap-1 rounded-full bg-gradient-to-br ring-gray-400 hover:bg-white hover:ring has-[[value=up]:hover]:from-green-200 has-[[value=up]:hover]:to-green-50 has-[[value=up]:hover]:text-green-900 has-[[value=up]:hover]:ring-green-900 has-[[value^=down]:hover]:from-rose-50 has-[[value^=down]:hover]:to-rose-200 has-[[value^=down]:hover]:text-rose-900 has-[[value^=down]:hover]:ring-rose-900 has-[[value^=down]:hover]:[&>[value=up]]:opacity-0 has-[[value=up]:hover]:[&>[value^=down]]:opacity-0"
       onSubmit={optimisticVote}
     >
-      <input className="hidden" type="hidden" name="postId" value={postId} />
+      <input
+        className="hidden"
+        type="hidden"
+        name={"postId" in target ? "postId" : "commentId"}
+        value={"postId" in target ? target.postId : target.commentId}
+      />
 
       <button
-        className="group leading-none hover:text-green-700 data-[active=true]:text-green-700 text-2xl"
-        data-active={state.vote === "up"}
-        name="vote"
+        className="group text-[2em] leading-none transition-colors hover:text-green-700 data-[active=true]:text-green-700"
+        data-active={state.value === "up"}
+        name="value"
         value="up"
         type="submit"
       >
@@ -75,23 +80,25 @@ export default function VoteButton({ postId, ...defaultState }: Props) {
         <PiArrowCircleUpFill className="hidden text-green-700 group-[[data-active=true]]:block" />
       </button>
 
-      <p className="text-xs font-bold min-w-5 text-center">
+      <p className="min-w-5 text-center font-semibold">
         {/* TODO: Add large integer formatting using `Intl.NumberFormat` */}
         {state.score}
       </p>
 
       <button
-        className="group leading-none hover:text-red-700 data-[active=true]:text-red-700 text-2xl"
-        data-active={state.vote?.startsWith("down")}
-        name="vote"
-        value={state.vote?.startsWith("down") ? state.vote : undefined}
-        type={state.vote?.startsWith("down") ? "submit" : "button"}
+        className="group text-[2em] leading-none transition-colors hover:text-rose-700 data-[active=true]:text-red-700"
+        data-active={state.value?.startsWith("down")}
+        name="value"
+        value={state.value?.startsWith("down") ? state.value : "down.*"}
+        type={state.value?.startsWith("down") ? "submit" : "button"}
         onClick={
-          state.vote?.startsWith("down") ? undefined : () => setDialogOpen(true)
+          state.value?.startsWith("down")
+            ? undefined
+            : () => setDialogOpen(true)
         }
       >
-          <PiArrowCircleDown className="group-[[data-active=true]]:hidden" />
-          <PiArrowCircleDownFill className="hidden text-red-700 group-[[data-active=true]]:block" />
+        <PiArrowCircleDown className="group-[[data-active=true]]:hidden" />
+        <PiArrowCircleDownFill className="hidden text-red-700 group-[[data-active=true]]:block" />
       </button>
 
       <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -107,8 +114,8 @@ export default function VoteButton({ postId, ...defaultState }: Props) {
               <input
                 className="hidden"
                 type="hidden"
-                name="postId"
-                value={postId}
+                name={"postId" in target ? "postId" : "commentId"}
+                value={"postId" in target ? target.postId : target.commentId}
               />
 
               <Dialog.Title className="text-center font-bold">
@@ -119,29 +126,32 @@ export default function VoteButton({ postId, ...defaultState }: Props) {
 
               <fieldset className="flex flex-col gap-2 text-sm">
                 <button
-                  className="w-full rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
-                  name="vote"
+                  className="flex w-full items-center gap-2 rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
+                  name="value"
                   value="down.incorrect"
                   type="submit"
                 >
+                  <PiClockAfternoon className="text-xl text-gray-600" />
                   It contains outdated or incorrect information.
                 </button>
 
                 <button
-                  className="w-full rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
-                  name="vote"
+                  className="flex w-full items-center gap-2 rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
+                  name="value"
                   value="down.harmful"
                   type="submit"
                 >
+                  <PiSmileyXEyes className="text-xl text-gray-600" />
                   It contains harmful or offensive content.
                 </button>
 
                 <button
-                  className="w-full rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
-                  name="vote"
+                  className="flex w-full items-center gap-2 rounded-sm border-b-2 border-gray-200 bg-gray-50 px-3 py-1.5 text-left ring ring-gray-300 hover:mt-0.5 hover:border-b-0"
+                  name="value"
                   type="submit"
                   value="down.spam"
                 >
+                  <PiTrash className="text-xl text-gray-600" />
                   It is deceptive, misleading, or spam.
                 </button>
               </fieldset>
