@@ -1,5 +1,4 @@
 import { createId } from "@paralleldrive/cuid2";
-import { sql, type SQL } from "drizzle-orm";
 import {
   foreignKey,
   index,
@@ -9,7 +8,6 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
-  type AnyMySqlColumn,
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm/relations";
 import { lower } from "./utils";

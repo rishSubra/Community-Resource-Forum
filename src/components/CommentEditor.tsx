@@ -66,11 +66,7 @@ interface Props extends PropsWithChildren<Context["data"]> {
   defaultActive?: boolean;
 }
 
-export function Root({
-  children,
-  defaultActive = false,
-  ...data
-}: Props) {
+export function Root({ children, defaultActive = false, ...data }: Props) {
   const state = useState<boolean>(defaultActive);
 
   return (

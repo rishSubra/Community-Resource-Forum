@@ -210,7 +210,7 @@ export default function SelectDateTimeRange({ inputNames }: Props) {
   return (
     <span className="relative mx-auto flex w-full max-w-xl flex-col gap-4">
       <span
-        className="group grid grid-cols-8 sm:grid-cols-9 items-center gap-1.5 sm:grid-rows-2 data-[allDay='true']:sm:grid-cols-[1fr_min-content_1fr] data-[allDay='true']:sm:grid-rows-1"
+        className="group grid grid-cols-8 items-center gap-1.5 sm:grid-cols-9 sm:grid-rows-2 data-[allDay='true']:sm:grid-cols-[1fr_min-content_1fr] data-[allDay='true']:sm:grid-rows-1"
         data-allday={dateTimeRange?.allDay ?? false}
       >
         <input

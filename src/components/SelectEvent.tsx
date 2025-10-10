@@ -13,7 +13,7 @@ import {
   PiCalendarBlank,
   PiCheckBold,
   PiLinkBold,
-  PiMagnifyingGlass
+  PiMagnifyingGlass,
 } from "react-icons/pi";
 import formatEventTime from "~/lib/formatEventTime";
 import type { events } from "~/server/db/schema";

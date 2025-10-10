@@ -6,10 +6,8 @@ import {
   PiArrowCircleDown,
   PiArrowCircleDownFill,
   PiArrowCircleUp,
-  PiArrowCircleUpDuotone,
   PiArrowCircleUpFill,
   PiClockAfternoon,
-  PiSmileyNervous,
   PiSmileyXEyes,
   PiTrash,
 } from "react-icons/pi";

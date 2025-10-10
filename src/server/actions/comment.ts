@@ -106,7 +106,9 @@ export default async function comment(_prevState: unknown, formData: FormData) {
         .where(eq(posts.id, postId));
     });
 
-    redirect(`/discussion/${postId}${parentId ? `/${parentId}` : ""}?sortBy=recent`);
+    redirect(
+      `/discussion/${postId}${parentId ? `/${parentId}` : ""}?sortBy=recent`,
+    );
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
