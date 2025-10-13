@@ -53,7 +53,7 @@ export async function DELETE(request: Request) {
       .where(and(eq(flags.userId, userId), eq(flags.postId, postId)));
 
     if (existingFlag.length === 0) {
-      return new Response("Flag not found", { status: 404 });
+      return new Response("Flag not found", { status: 404 });       
     }
 
     // Delete the flag
