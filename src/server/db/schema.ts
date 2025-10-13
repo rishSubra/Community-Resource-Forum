@@ -298,7 +298,7 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 }));
 
 export const flags = mysqlTable(
-  "flag",
+  "flags",
   (d) => ({
     userId: d
       .varchar({ length: 255 })
