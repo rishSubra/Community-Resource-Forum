@@ -7,7 +7,7 @@ import {
   PiChatCircleTextBold,
   PiDotsThreeBold,
   PiHash,
-  PiXBold
+  PiXBold,
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
 import ShareButton from "~/components/ShareButton";
