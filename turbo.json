@@ -35,6 +35,9 @@
     "prettier": {
       "dependsOn": []
     },
+    "prettier:check": {
+      "dependsOn": []
+    },
     "typecheck": {
       "dependsOn": []
     }
