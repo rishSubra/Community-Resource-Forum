@@ -31,6 +31,13 @@
       "breakpoints": true
     },
     {
+      "idx": 3,
+      "version": "5",
+      "when": 1760332315021,
+      "tag": "0003_search_add_fulltext_idx",
+      "breakpoints": true
+    },
+    {
       "idx": 4,
       "version": "5",
       "when": 1758996187543,
