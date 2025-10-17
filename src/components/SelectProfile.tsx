@@ -57,7 +57,10 @@ export default function SelectProfile({ inputName, profiles }: Props) {
             displayValue={(p: Profile) => p.name}
           />
 
-          <ComboboxButton className="group absolute inset-y-0 right-0 px-3">
+          <ComboboxButton
+            className="group absolute inset-y-0 right-0 px-3"
+            suppressHydrationWarning
+          >
             <PiCaretDownBold className="size-4 fill-black/60 group-data-hover:fill-black" />
           </ComboboxButton>
         </div>

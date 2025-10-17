@@ -21,6 +21,7 @@ import {
 import * as z from "zod";
 import Avatar from "~/components/Avatar";
 import * as CommentEditor from "~/components/CommentEditor";
+import ShareDropdown from "~/components/ShareDropdown";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
@@ -438,10 +439,14 @@ export default async function Page({
               </button>
             </CommentEditorTrigger>
 
-            <button className="flex items-center gap-4 rounded-full bg-white py-1 pr-6 pl-2 leading-none ring ring-gray-400 hover:bg-sky-100 hover:ring-sky-800">
-              <PiShareFatBold className="text-xl" />
-              <span className="font-semibold">Share</span>
-            </button>
+            <ShareDropdown
+              permalink={`https://community-resource-forum.vercel.app/discussion/${post.id}`}
+            >
+              <button className="flex items-center gap-4 rounded-full bg-white py-1 pr-6 pl-2 leading-none ring ring-gray-400 hover:bg-sky-100 hover:ring-sky-800">
+                <PiShareFatBold className="text-xl" />
+                <span className="font-semibold">Share</span>
+              </button>
+            </ShareDropdown>
 
             <div className="ml-auto"></div>
           </div>
@@ -470,7 +475,7 @@ export default async function Page({
               </p>
 
               <Dropdown.Root>
-                <Dropdown.Trigger asChild>
+                <Dropdown.Trigger asChild suppressHydrationWarning>
                   <label className="flex items-center gap-2 text-xs text-gray-800">
                     <span className="pb-0.5">Sort by:</span>
                     <button

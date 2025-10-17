@@ -7,10 +7,11 @@ import {
   PiChatCircleTextBold,
   PiDotsThreeBold,
   PiHash,
+  PiShareFatBold,
   PiXBold,
 } from "react-icons/pi";
 import Avatar from "~/components/Avatar";
-import ShareButton from "~/components/ShareButton";
+import ShareDropdown from "~/components/ShareDropdown";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
@@ -66,8 +67,8 @@ export default async function HomePage({
       tag: tags,
     })
     .from(posts)
-    .innerJoin(queriedTagRelations, eq(queriedTagRelations.postId, posts.id))
-    .innerJoin(queriedTags, eq(queriedTags.id, queriedTagRelations.tagId))
+    .leftJoin(queriedTagRelations, eq(queriedTagRelations.postId, posts.id))
+    .leftJoin(queriedTags, eq(queriedTags.id, queriedTagRelations.tagId))
     .groupBy(posts.id, tags.id)
     .having(
       and(
@@ -237,9 +238,14 @@ export default async function HomePage({
                 </span>
               </Link>
 
-              <ShareButton
-                link={`https://community-resource-forum.vercel.app/discussion/${post.id}`}
-              />
+              <ShareDropdown
+                permalink={`https://community-resource-forum.vercel.app/discussion/${post.id}`}
+              >
+                <button className="flex items-center gap-2 rounded-full px-2 py-1 leading-none hover:bg-sky-100 hover:ring hover:ring-sky-800">
+                  <PiShareFatBold />
+                  <span className="text-xs font-semibold">Share</span>
+                </button>
+              </ShareDropdown>
 
               <div className="ml-auto text-xs">
                 <VoteButton

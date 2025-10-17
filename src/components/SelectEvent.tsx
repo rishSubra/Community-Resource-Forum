@@ -67,7 +67,10 @@ export default function SelectEvent({ events }: Props) {
               placeholder="Search your events..."
             />
 
-            <ComboboxButton className="group absolute inset-y-0 left-0 px-3">
+            <ComboboxButton
+              className="group absolute inset-y-0 left-0 px-3"
+              suppressHydrationWarning
+            >
               <PiMagnifyingGlass className="size-4 fill-black/60 group-data-hover:fill-black" />
             </ComboboxButton>
           </div>
