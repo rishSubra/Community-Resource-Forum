@@ -16,7 +16,7 @@ export default function FlagButton({ postId, userId }: FlagButtonProps) {
     }
 
     try {
-      const res = await fetch("/api/flags", {
+      const res = await fetch("/api/auth/flags", {
         method: flagged ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, postId }),

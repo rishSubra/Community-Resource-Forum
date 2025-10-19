@@ -1,6 +1,6 @@
 import { db } from "~/server/db";
-import { flags } from "~/server/db/schema";
-import { and, eq } from "drizzle-orm";
+import { posts, flags } from "~/server/db/schema";
+import { and, eq, sql } from "drizzle-orm";
 
 
 // Insert New Flag
@@ -22,8 +22,17 @@ export async function POST(request: Request) {
       return new Response("Flag already exists", { status: 200 });
     }
 
-    // Insert new flag
-    await db.insert(flags).values({ userId, postId });
+    // Insert new flag + increment flagCount
+    await db.transaction(async (tx) => {
+      await tx.insert(flags).values({ userId, postId });
+
+      await tx
+        .update(posts)
+        .set({
+          flagCount: sql`${posts.flagCount} + 1`,
+        })
+        .where(eq(posts.id, postId));
+    });
 
     return new Response("Flag created", { status: 201 });
   } catch (error: any) {
@@ -57,9 +66,18 @@ export async function DELETE(request: Request) {
     }
 
     // Delete the flag
-    await db
-      .delete(flags)
-      .where(and(eq(flags.userId, userId), eq(flags.postId, postId)));
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(flags)
+        .where(and(eq(flags.userId, userId), eq(flags.postId, postId)));
+
+      await tx
+        .update(posts)
+        .set({
+          flagCount: sql`${posts.flagCount} - 1`,
+        })
+        .where(eq(posts.id, postId));
+    });
 
     return new Response("Flag deleted", { status: 200 });
   } catch (error) {
