@@ -14,6 +14,7 @@ import Avatar from "~/components/Avatar";
 import ShareDropdown from "~/components/ShareDropdown";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
+import FlagButton from "~/components/FlagButton";
 import { getSessionUser } from "~/server/auth";
 import { db } from "~/server/db";
 import {
@@ -165,6 +166,9 @@ export default async function HomePage({
                   </span>
                 </Link>
 
+                <FlagButton postId={post.id} userId={session?.userId ?? ""} />
+
+
                 <button className="-m-0.5 rounded-full p-0.5 hover:bg-gray-200">
                   <PiDotsThreeBold />
                 </button>
@@ -266,4 +270,3 @@ export default async function HomePage({
       )}
     </div>
   );
-}
