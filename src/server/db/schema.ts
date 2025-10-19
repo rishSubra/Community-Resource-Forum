@@ -45,6 +45,7 @@ export const posts = mysqlTable(
     eventId: d.varchar({ length: 255 }).references(() => events.id),
     score: d.int().notNull().default(0),
     commentCount: d.int().notNull().default(0),
+    flagCount: d.int().notNull().default(0),
     createdAt: d.timestamp().defaultNow().notNull(),
     updatedAt: d.timestamp().onUpdateNow(),
   }),
