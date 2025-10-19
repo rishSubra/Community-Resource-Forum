@@ -54,6 +54,8 @@ export const posts = mysqlTable(
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
   tags: many(tagsToPosts),
+  replies: many(replies),
+  flags: many(flags),
   author: one(profiles, {
     fields: [posts.authorId],
     references: [profiles.id],
@@ -337,7 +339,8 @@ export const flags = mysqlTable(
       .references(() => posts.id, { onDelete: "cascade" }),
     createdAt: d.timestamp().defaultNow().notNull(),
   }),
-  (t) => [primaryKey({ columns: [t.userId, t.postId] })],
+  (t) => [
+    primaryKey({ columns: [t.userId, t.postId] })],
 );
 
 export const flagRelations = relations(flags, ({ one }) => ({
