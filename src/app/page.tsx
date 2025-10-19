@@ -168,7 +168,6 @@ export default async function HomePage({
 
                 <FlagButton postId={post.id} userId={session?.userId ?? ""} />
 
-
                 <button className="-m-0.5 rounded-full p-0.5 hover:bg-gray-200">
                   <PiDotsThreeBold />
                 </button>
