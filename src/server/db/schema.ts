@@ -63,6 +63,7 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   }),
   votes: many(postVotes),
   comments: many(comments),
+  flags: many(flags),
 }));
 
 export const voteValue = mysqlEnum([
@@ -239,6 +240,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   subscriptions: many(subscriptions),
   organizations: many(organizations),
   sessions: many(sessions),
+  flags: many(flags),
 }));
 
 export const subscriptions = mysqlTable(
@@ -318,5 +320,32 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
+  }),
+}));
+
+export const flags = mysqlTable(
+  "flags",
+  (d) => ({
+    userId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    createdAt: d.timestamp().defaultNow().notNull(),
+  }),
+  (t) => [primaryKey({ columns: [t.userId, t.postId] })],
+);
+
+export const flagRelations = relations(flags, ({ one }) => ({
+  user: one(users, {
+    fields: [flags.userId],
+    references: [users.id],
+  }),
+  post: one(posts, {
+    fields: [flags.postId],
+    references: [posts.id],
   }),
 }));
