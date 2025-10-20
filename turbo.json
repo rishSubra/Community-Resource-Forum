@@ -13,33 +13,36 @@
   "tasks": {
     "db:generate": {
       "dependsOn": [],
-      "outputs": ["drizzle/**/*"]
+      "outputs": ["migrations/ddl.sql"]
+    },
+    "db:migrate": {
+      "dependsOn": ["db:generate"],
+      "interactive": true,
+      "cache": false
+    },
+    "docker:ready": {
+      "cache": false
     },
     "build": {
       "dependsOn": ["db:generate"],
       "outputs": [".next/**"]
     },
     "Next.js": {
-      "dependsOn": [],
+      "dependsOn": ["db:migrate","docker:ready"],
       "persistent": true,
       "cache": false
     },
-    "Drizzle-Studio": {
-      "dependsOn": [],
+    "Drizzle Studio": {
+      "dependsOn": ["docker:ready"],
       "persistent": true,
       "cache": false
     },
     "lint:fix": {
       "dependsOn": []
     },
-    "prettier": {
-      "dependsOn": []
-    },
-    "prettier:check": {
-      "dependsOn": []
-    },
     "typecheck": {
       "dependsOn": []
     }
-  }
+  },
+  "ui": "tui"
 }
