@@ -15,11 +15,6 @@
       "dependsOn": [],
       "outputs": ["migrations/ddl.sql"]
     },
-    "db:migrate": {
-      "dependsOn": ["db:generate"],
-      "interactive": true,
-      "cache": false
-    },
     "docker:ready": {
       "cache": false
     },
@@ -28,12 +23,12 @@
       "outputs": [".next/**"]
     },
     "Next.js": {
-      "dependsOn": ["db:migrate","docker:ready"],
+      "dependsOn": [],
       "persistent": true,
       "cache": false
     },
     "Drizzle Studio": {
-      "dependsOn": ["docker:ready"],
+      "dependsOn": [],
       "persistent": true,
       "cache": false
     },
@@ -43,6 +38,5 @@
     "typecheck": {
       "dependsOn": []
     }
-  },
-  "ui": "tui"
+  }
 }
