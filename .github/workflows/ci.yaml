@@ -1,0 +1,38 @@
+name: CI
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  TURBO_TEAM: ${{ secrets.VERCEL_TEAM_ID }}
+  REF: ${{ (github.event_name == 'pull_request' && github.base_ref) || github.ref }}
+  ENV_CONFIG: ${{ (env.REF == 'main' && '--production') || format('--environment=preview --git-branch={0}', env.REF) }}
+on:
+  - pull_request
+  - push
+  
+jobs:
+  Checkstyle-Lint-Build:
+    runs-on: ubuntu-latest
+    env: 
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install dependencies
+        run: pnpm install
+      - name: Validate Formatting and Linting
+        run: pnpm turbo prettier:check
+        run: pnpm turbo lint
+      - name: Pull Vercel Preview Build Configuration
+        run: pnpm vercel env pull ${{ env.ENV_CONFIG }} --token=${{ secrets.VERCEL_TOKEN }} .env
+        run: pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: pnpm vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Migration Dry Run
+        if: ${{ github.event_name == 'pull_request' }}
+        run: pnpm db:migrate --dry-run
+      - name: Deploy Project
+        if: ${{ github.event_name == 'push' }}
+        run: pnpm db:migrate
+        run: pnpm vercel deploy ${{ (env.REF == 'main' && '--prod') || ' ' }} --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+      
