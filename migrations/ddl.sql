@@ -31,6 +31,13 @@ CREATE TABLE `event` (
 	CONSTRAINT `event_id` PRIMARY KEY(`id`)
 );
 
+CREATE TABLE `flags` (
+	`userId` varchar(255) NOT NULL,
+	`postId` varchar(255) NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `flags_userId_postId_pk` PRIMARY KEY(`userId`,`postId`)
+);
+
 CREATE TABLE `organization` (
 	`organizationId` varchar(255) NOT NULL,
 	`userId` varchar(255) NOT NULL,
@@ -52,6 +59,7 @@ CREATE TABLE `post` (
 	`eventId` varchar(255),
 	`score` int NOT NULL DEFAULT 0,
 	`commentCount` int NOT NULL DEFAULT 0,
+	`flagCount` int NOT NULL DEFAULT 0,
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`updatedAt` timestamp ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `post_id` PRIMARY KEY(`id`)
@@ -112,6 +120,8 @@ ALTER TABLE `comments` ADD CONSTRAINT `comments_authorId_profile_id_fk` FOREIGN 
 ALTER TABLE `comments` ADD CONSTRAINT `comments_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `comments` ADD CONSTRAINT `comments_parentId_comments_id_fk` FOREIGN KEY (`parentId`) REFERENCES `comments`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `event` ADD CONSTRAINT `event_organizerId_profile_id_fk` FOREIGN KEY (`organizerId`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `flags` ADD CONSTRAINT `flags_userId_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;
+ALTER TABLE `flags` ADD CONSTRAINT `flags_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE cascade ON UPDATE no action;
 ALTER TABLE `organization` ADD CONSTRAINT `organization_organizationId_profile_id_fk` FOREIGN KEY (`organizationId`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `organization` ADD CONSTRAINT `organization_userId_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `postVote` ADD CONSTRAINT `postVote_userId_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE no action ON UPDATE no action;

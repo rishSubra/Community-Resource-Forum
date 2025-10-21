@@ -45,6 +45,7 @@ export const posts = mysqlTable(
     eventId: d.varchar({ length: 255 }).references(() => events.id),
     score: d.int().notNull().default(0),
     commentCount: d.int().notNull().default(0),
+    flagCount: d.int().notNull().default(0),
     createdAt: d.timestamp().defaultNow().notNull(),
     updatedAt: d.timestamp().onUpdateNow(),
   }),
@@ -63,6 +64,7 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
   }),
   votes: many(postVotes),
   comments: many(comments),
+  flags: many(flags),
 }));
 
 export const voteValue = mysqlEnum([
@@ -318,5 +320,33 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
+  }),
+}));
+
+export const flags = mysqlTable(
+  "flags",
+  (d) => ({
+    userId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postId: d
+      .varchar({ length: 255 })
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    createdAt: d.timestamp().defaultNow().notNull(),
+  }),
+  (t) => [
+    primaryKey({ columns: [t.userId, t.postId] })],
+);
+
+export const flagRelations = relations(flags, ({ one }) => ({
+  user: one(users, {
+    fields: [flags.userId],
+    references: [users.id],
+  }),
+  post: one(posts, {
+    fields: [flags.postId],
+    references: [posts.id],
   }),
 }));

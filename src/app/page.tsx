@@ -206,8 +206,6 @@ export default async function HomePage({
               )}
             </div>
 
-            <FlagButton postId={post.id} userId={session?.userId ?? ""} />
-
             <div className="flex flex-wrap items-center justify-start gap-y-1 pb-2 text-xs">
               {Array.from(tags.values()).map((tag) => (
                 <Link
@@ -249,6 +247,8 @@ export default async function HomePage({
                   <span className="text-xs font-semibold">Share</span>
                 </button>
               </ShareDropdown>
+
+              <FlagButton postId={post.id} userId={session?.userId ?? ""} />
 
               <div className="ml-auto text-xs">
                 <VoteButton
