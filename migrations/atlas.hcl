@@ -10,8 +10,8 @@ data "external_schema" "drizzle" {
 }
 
 env "local" {
-  url = "mysql://root:${getenv("MYSQL_PASSWORD")}@${getenv("MYSQL_HOST")}:${getenv("MYSQL_PORT")}/${getenv("MYSQL_DATABASE")}"
-  dev = "mysql://root:${getenv("MYSQL_PASSWORD")}@mysql-dev:3306/dev"
+  url = "mysql://${getenv("MYSQL_USER")}:${getenv("MYSQL_PASSWORD")}@${getenv("MYSQL_HOST")}:${getenv("MYSQL_PORT")}/${getenv("MYSQL_DATABASE")}"
+  dev = "mysql://root:password@mysql-dev:3306/dev"
   schema {
     src = data.external_schema.drizzle.url
   }
