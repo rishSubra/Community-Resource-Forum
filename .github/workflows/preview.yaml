@@ -18,9 +18,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --ignore-scripts
       - name: Pull Vercel Environment Variables
-        run: pnpm vercel env pull --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }} .env
+        run: pnpm vercel env pull --environment=preview --git-branch=${{ github.ref_name }} --token=${{ secrets.VERCEL_TOKEN }} .env
       - name: Pull Vercel Build Configuration
-        run: pnpm vercel pull --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
+        run: pnpm vercel pull --yes --environment=preview --git-branch=${{ github.ref_name }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
         run: pnpm vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Migrate Database
