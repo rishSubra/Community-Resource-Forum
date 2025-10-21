@@ -18,6 +18,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --ignore-scripts
       - name: Pull Vercel Environment Information
+        run:
           - pnpm vercel env pull --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }} .env
           - pnpm vercel pull --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
