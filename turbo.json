@@ -36,14 +36,18 @@
       "persistent": true,
       "cache": false
     },
+    "typegen": {
+      "dependsOn": [],
+      "outputs": [".next/**", "next-env.d.ts", "tsconfig.tsbuildinfo"]
+    },
     "lint": {
-      "dependsOn": []
+      "dependsOn": ["typegen"]
     },
     "prettier": {
       "dependsOn": []
     },
     "typecheck": {
-      "dependsOn": []
+      "dependsOn": ["typegen"]
     }
   }
 }
