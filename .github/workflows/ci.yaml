@@ -21,7 +21,7 @@ jobs:
         run: pnpm install --ignore-scripts
       - name: Pull Vercel Preview Build Configuration
         run: |
-          pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
+          pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
           pnpm vercel env pull ${{ env.ENV_CONFIG }} --token=${{ secrets.VERCEL_TOKEN }} .env
         env:
           ENV_CONFIG: ${{ (env.REF == 'main' && '--production') || format('--environment=preview --git-branch={0}', env.REF) }}
