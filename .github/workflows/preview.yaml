@@ -24,6 +24,6 @@ jobs:
       - name: Build Project Artifacts
         run: pnpm vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Migrate Database
-        run: pnpm db:migrate
+        run: pnpm db:migrate --auto-approve
       - name: Deploy Project Artifacts to Vercel
         run: pnpm vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
