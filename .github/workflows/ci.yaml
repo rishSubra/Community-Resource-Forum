@@ -19,14 +19,14 @@ jobs:
         uses: pnpm/action-setup@v4
       - name: Install dependencies
         run: pnpm install --ignore-scripts
-      - name: Validate Formatting and Linting
-        run: pnpm turbo lint prettier
       - name: Pull Vercel Preview Build Configuration
         run: |
           pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
           pnpm vercel env pull ${{ env.ENV_CONFIG }} --token=${{ secrets.VERCEL_TOKEN }} .env
         env:
           ENV_CONFIG: ${{ (env.REF == 'main' && '--production') || format('--environment=preview --git-branch={0}', env.REF) }}
+      - name: Validate Formatting and Linting
+        run: pnpm turbo lint prettier
       - name: Build Project Artifacts
         run: pnpm vercel build --token=${{ secrets.VERCEL_TOKEN }}
       - name: Migration Dry Run
