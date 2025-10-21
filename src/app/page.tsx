@@ -201,6 +201,8 @@ export default async function HomePage({
                       {formatEventTime(event)}
                     </span>
                   </span>
+                </Link>
+              )}
 
               <FlagButton postId={post.id} userId={session?.userId ?? ""} />
 

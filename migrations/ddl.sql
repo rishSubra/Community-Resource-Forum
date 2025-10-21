@@ -1,6 +1,16 @@
 Reading schema files:
 /Users/rayanbatada/Desktop/codes/Current/devdogs/Community-Resource-Forum/src/server/db/schema.ts
 
+{
+  column: 2,
+  file: '/Users/rayanbatada/Desktop/codes/Current/devdogs/Community-Resource-Forum/src/server/db/schema.ts',
+  length: 5,
+  line: 69,
+  lineText: '  flags: many(flags),',
+  namespace: '',
+  suggestion: ''
+}
+Duplicate key "flags" in object literal
 CREATE TABLE `commentVote` (
 	`userId` varchar(255) NOT NULL,
 	`commentId` varchar(255) NOT NULL,
@@ -8,7 +18,7 @@ CREATE TABLE `commentVote` (
 	CONSTRAINT `commentVote_userId_commentId_pk` PRIMARY KEY(`userId`,`commentId`)
 );
 
-CREATE TABLE `comments` (
+CREATE TABLE `comment` (
 	`id` varchar(255) NOT NULL,
 	`content` text NOT NULL,
 	`score` int NOT NULL DEFAULT 0,
@@ -17,7 +27,7 @@ CREATE TABLE `comments` (
 	`replyCount` int NOT NULL DEFAULT 0,
 	`parentId` varchar(255),
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
-	CONSTRAINT `comments_id` PRIMARY KEY(`id`)
+	CONSTRAINT `comment_id` PRIMARY KEY(`id`)
 );
 
 CREATE TABLE `event` (
@@ -108,17 +118,17 @@ CREATE TABLE `tags_to_posts` (
 CREATE TABLE `user` (
 	`id` varchar(255) NOT NULL,
 	`email` varchar(255) NOT NULL,
-	`created_at` timestamp NOT NULL DEFAULT (now()),
-	`updated_at` timestamp ON UPDATE CURRENT_TIMESTAMP,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `user_id` PRIMARY KEY(`id`),
 	CONSTRAINT `email_idx` UNIQUE((lower(`email`)))
 );
 
 ALTER TABLE `commentVote` ADD CONSTRAINT `commentVote_userId_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE no action ON UPDATE no action;
-ALTER TABLE `commentVote` ADD CONSTRAINT `commentVote_commentId_comments_id_fk` FOREIGN KEY (`commentId`) REFERENCES `comments`(`id`) ON DELETE no action ON UPDATE no action;
-ALTER TABLE `comments` ADD CONSTRAINT `comments_authorId_profile_id_fk` FOREIGN KEY (`authorId`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
-ALTER TABLE `comments` ADD CONSTRAINT `comments_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE no action ON UPDATE no action;
-ALTER TABLE `comments` ADD CONSTRAINT `comments_parentId_comments_id_fk` FOREIGN KEY (`parentId`) REFERENCES `comments`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `commentVote` ADD CONSTRAINT `commentVote_commentId_comment_id_fk` FOREIGN KEY (`commentId`) REFERENCES `comment`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `comment` ADD CONSTRAINT `comment_authorId_profile_id_fk` FOREIGN KEY (`authorId`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `comment` ADD CONSTRAINT `comment_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `comment` ADD CONSTRAINT `comment_parentId_comment_id_fk` FOREIGN KEY (`parentId`) REFERENCES `comment`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `event` ADD CONSTRAINT `event_organizerId_profile_id_fk` FOREIGN KEY (`organizerId`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `flags` ADD CONSTRAINT `flags_userId_user_id_fk` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;
 ALTER TABLE `flags` ADD CONSTRAINT `flags_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE cascade ON UPDATE no action;
@@ -134,5 +144,5 @@ ALTER TABLE `subscription` ADD CONSTRAINT `subscription_tagId_tag_id_fk` FOREIGN
 ALTER TABLE `tags_to_posts` ADD CONSTRAINT `tags_to_posts_tagId_tag_id_fk` FOREIGN KEY (`tagId`) REFERENCES `tag`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `tags_to_posts` ADD CONSTRAINT `tags_to_posts_postId_post_id_fk` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE no action ON UPDATE no action;
 ALTER TABLE `user` ADD CONSTRAINT `user_id_profile_id_fk` FOREIGN KEY (`id`) REFERENCES `profile`(`id`) ON DELETE no action ON UPDATE no action;
-CREATE INDEX `author_idx` ON `comments` (`authorId`);
+CREATE INDEX `author_idx` ON `comment` (`authorId`);
 CREATE INDEX `author_idx` ON `post` (`authorId`);
