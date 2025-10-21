@@ -1,10 +1,12 @@
 data "external_schema" "drizzle" {
-    program = [ 
-      "tail",
-      "-n",
-      "+3",
-      "/migrations/ddl.sql",
-    ]
+  program = [ 
+    "tail",
+    "-q",
+    "-n",
+    "+3",
+    "/migrations/ddl.sql",
+    "/migrations/overrides.sql",
+  ]
 }
 
 env "local" {
