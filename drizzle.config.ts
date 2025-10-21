@@ -11,4 +11,5 @@ export default {
     port: env.MYSQL_PORT,
     database: env.MYSQL_DATABASE,
   },
+  
 } satisfies Config;
