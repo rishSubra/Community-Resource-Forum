@@ -28,7 +28,7 @@ jobs:
       - name: Validate Formatting and Linting
         run: pnpm turbo lint prettier
       - name: Build Project Artifacts
-        run: pnpm vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: pnpm vercel build ${{ (env.REF == 'main' && '--prod') || ' ' }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Migration Dry Run
         if: ${{ github.event_name == 'pull_request' }}
         run: pnpm db:migrate --dry-run
