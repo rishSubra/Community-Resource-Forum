@@ -47,4 +47,4 @@ yarn-error.log*
 .idea
 
 # drizzle
-./migrations/ddl.sql
+migrations/ddl.sql

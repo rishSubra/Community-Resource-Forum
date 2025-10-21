@@ -7,7 +7,7 @@ import {
   primaryKey,
   timestamp,
   uniqueIndex,
-  varchar,
+  varchar
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm/relations";
 import { lower } from "./utils";
@@ -54,6 +54,8 @@ export const posts = mysqlTable(
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
   tags: many(tagsToPosts),
+  replies: many(replies),
+  flags: many(flags),
   author: one(profiles, {
     fields: [posts.authorId],
     references: [profiles.id],
@@ -98,7 +100,7 @@ export const postVotesRelations = relations(postVotes, ({ one }) => ({
 }));
 
 export const comments = mysqlTable(
-  "comments",
+  "comment",
   (d) => ({
     id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
     content: d.text().notNull(),
@@ -227,8 +229,8 @@ export const users = mysqlTable(
       .primaryKey()
       .references(() => profiles.id),
     email: varchar("email", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").onUpdateNow(),
+    createdAt: d.timestamp().defaultNow().notNull(),
+    updatedAt: d.timestamp().onUpdateNow(),
   }),
   (t) => [uniqueIndex("email_idx").on(lower(t.email))],
 );
@@ -241,6 +243,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   subscriptions: many(subscriptions),
   organizations: many(organizations),
   sessions: many(sessions),
+  flags: many(flags),
 }));
 
 export const subscriptions = mysqlTable(
