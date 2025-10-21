@@ -40,6 +40,7 @@ services:
     image: arigaio/atlas:latest-alpine
     environment:
       MYSQL_HOST: ${MYSQL_HOST:-mysql}
+      MYSQL_USER: ${MYSQL_USER:-root}
       MYSQL_PORT: ${MYSQL_PORT:-25060}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-devdogs}
