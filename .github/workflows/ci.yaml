@@ -27,13 +27,14 @@ jobs:
           ENV_CONFIG: ${{ (env.REF == 'main' && '--environment=production') || format('--environment=preview --git-branch={0}', env.REF) }}
       - name: Validate Formatting and Linting
         run: pnpm turbo lint prettier
-      - name: Build Project Artifacts
+      - name: Build Project
         run: pnpm vercel build ${{ (env.REF == 'main' && '--prod') || ' ' }} --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Migration Dry Run
+      - name: Dry Run Database Migration (for PRs)
         if: ${{ github.event_name == 'pull_request' }}
-        run: pnpm db:migrate --dry-run
-      - name: Deploy Project
+        run: |
+          pnpm db:migrate --dry-run
+      - name: Deploy Project (for Pushes)
         if: ${{ github.event_name == 'push' }}
         run: |
-          pnpm db:migrate
           pnpm vercel deploy ${{ (env.REF == 'main' && '--prod') || ' ' }} --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+          pnpm db:push --auto-approve
