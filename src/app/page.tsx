@@ -14,6 +14,7 @@ import Avatar from "~/components/Avatar";
 import ShareDropdown from "~/components/ShareDropdown";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
+import FlagButton from "~/components/FlagButton";
 import { getSessionUser } from "~/server/auth";
 import { db } from "~/server/db";
 import {
@@ -204,6 +205,8 @@ export default async function HomePage({
                 </Link>
               )}
             </div>
+
+            <FlagButton postId={post.id} userId={session?.userId ?? ""} />
 
             <div className="flex flex-wrap items-center justify-start gap-y-1 pb-2 text-xs">
               {Array.from(tags.values()).map((tag) => (
