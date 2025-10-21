@@ -24,7 +24,7 @@ jobs:
           pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
           pnpm vercel env pull ${{ env.ENV_CONFIG }} --token=${{ secrets.VERCEL_TOKEN }} .env
         env:
-          ENV_CONFIG: ${{ (env.REF == 'main' && '--production') || format('--environment=preview --git-branch={0}', env.REF) }}
+          ENV_CONFIG: ${{ (env.REF == 'main' && '--environment=production') || format('--environment=preview --git-branch={0}', env.REF) }}
       - name: Validate Formatting and Linting
         run: pnpm turbo lint prettier
       - name: Build Project Artifacts
