@@ -1,19 +1,5 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": [
-    "AUTH_GOOGLE_ID",
-    "AUTH_GOOGLE_SECRET",
-    "AUTH_REDIRECT_URL",
-    "MYSQL_USER",
-    "MYSQL_PASSWORD",
-    "MYSQL_HOST",
-    "MYSQL_PORT",
-    "MYSQL_DATABASE",
-    "S3_PORT",
-    "S3_REGION",
-    "S3_ACCESS_KEY_ID",
-    "S3_SECRET_ACCESS_KEY"
-  ],
   "tasks": {
     "db:generate": {
       "dependsOn": [],
@@ -23,6 +9,20 @@
       "cache": false
     },
     "build": {
+      "env": [
+        "AUTH_GOOGLE_ID",
+        "AUTH_GOOGLE_SECRET",
+        "AUTH_REDIRECT_URL",
+        "MYSQL_USER",
+        "MYSQL_PASSWORD",
+        "MYSQL_HOST",
+        "MYSQL_PORT",
+        "MYSQL_DATABASE",
+        "S3_PORT",
+        "S3_REGION",
+        "S3_ACCESS_KEY_ID",
+        "S3_SECRET_ACCESS_KEY"
+      ],
       "dependsOn": ["db:generate"],
       "outputs": [".next/**"]
     },
@@ -36,11 +36,18 @@
       "persistent": true,
       "cache": false
     },
-    "lint:fix": {
+    "typegen": {
+      "dependsOn": [],
+      "outputs": [".next/**", "next-env.d.ts", "tsconfig.tsbuildinfo"]
+    },
+    "lint": {
+      "dependsOn": ["typegen"]
+    },
+    "prettier": {
       "dependsOn": []
     },
     "typecheck": {
-      "dependsOn": []
+      "dependsOn": ["typegen"]
     }
   }
 }
