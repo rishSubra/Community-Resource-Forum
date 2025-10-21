@@ -20,9 +20,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Validate Formatting and Linting
-        run: |
-          pnpm turbo prettier:check
-          pnpm turbo lint
+        run: pnpm turbo lint prettier
       - name: Pull Vercel Preview Build Configuration
         run: |
           pnpm vercel pull ${{ env.ENV_CONFIG }} --yes --environment=preview --git-branch=${{ github.base_ref }} --token=${{ secrets.VERCEL_TOKEN }}
