@@ -7,7 +7,7 @@ import {
   primaryKey,
   timestamp,
   uniqueIndex,
-  varchar,
+  varchar
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm/relations";
 import { lower } from "./utils";
@@ -96,7 +96,7 @@ export const postVotesRelations = relations(postVotes, ({ one }) => ({
 }));
 
 export const comments = mysqlTable(
-  "comments",
+  "comment",
   (d) => ({
     id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
     content: d.text().notNull(),
@@ -225,8 +225,8 @@ export const users = mysqlTable(
       .primaryKey()
       .references(() => profiles.id),
     email: varchar("email", { length: 255 }).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").onUpdateNow(),
+    createdAt: d.timestamp().defaultNow().notNull(),
+    updatedAt: d.timestamp().onUpdateNow(),
   }),
   (t) => [uniqueIndex("email_idx").on(lower(t.email))],
 );
