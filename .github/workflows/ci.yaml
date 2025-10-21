@@ -13,7 +13,7 @@ on:
 jobs:
   Checkstyle-Lint-Build:
     runs-on: ubuntu-latest
-    env: 
+    if: ${{ github.repository == 'DevDogs-UGA/Community-Resource-Forum' }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup pnpm
