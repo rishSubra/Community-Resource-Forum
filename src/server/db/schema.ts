@@ -337,7 +337,7 @@ export const flags = mysqlTable(
     createdAt: d.timestamp().defaultNow().notNull(),
   }),
   (t) => [
-    primaryKey({ columns: [t.userId, t.postId] })],
+    primaryKey({ columns: [t.userId, t.postId] })], // max one flag per user per post
 );
 
 export const flagRelations = relations(flags, ({ one }) => ({

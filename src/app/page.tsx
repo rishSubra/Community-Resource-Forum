@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict, getDate } from "date-fns";
-import { and, between, desc, eq, or, sum } from "drizzle-orm";
+import { and, between, desc, eq, or, sum, lte } from "drizzle-orm";
 import { alias } from "drizzle-orm/mysql-core";
 import Link from "next/link";
 import {
@@ -68,6 +68,7 @@ export default async function HomePage({
       tag: tags,
     })
     .from(posts)
+    .where(lte(posts.flagCount, 5))
     .leftJoin(queriedTagRelations, eq(queriedTagRelations.postId, posts.id))
     .leftJoin(queriedTags, eq(queriedTags.id, queriedTagRelations.tagId))
     .groupBy(posts.id, tags.id)
