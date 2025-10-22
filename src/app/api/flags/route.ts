@@ -2,16 +2,17 @@ import { db } from "~/server/db";
 import { flags } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm";
 
-
 // Insert New Flag
 export async function POST(request: Request) {
   try {
-    const { userId, postId } = await request.json();
 
-    if (!userId || !postId) {
+    const data: unknown = await request.json();
+
+    if (!(typeof data === "object" && data !== null && "userId" in data && typeof data.userId === "string" && "postId" in data && typeof data.postId === "string")) {
       return new Response("Missing userId or postId", { status: 400 });
     }
 
+    const { userId, postId } = data;
     return await db.transaction(async (tx) => {
       // Check if flag already exists
       const existingFlag = await tx
@@ -32,16 +33,10 @@ export async function POST(request: Request) {
         .set({ flagCount: sql`${posts.flagCount} + 1` })
         .where(eq(posts.id, postId));
 
-        return new Response("Flag created", { status: 201 });
-
+      return new Response("Flag created", { status: 201 });
     });
-
-    
-  } catch (error: any) {
+  } catch (error: unknown){
     // Detect duplicate key errors specifically
-    if (error.code === "ER_DUP_ENTRY") {
-      return new Response("Flag already exists", { status: 200 });
-    }
 
     console.error("Error creating flag:", error);
     return new Response("Internal Server Error", { status: 500 });
@@ -51,38 +46,37 @@ export async function POST(request: Request) {
 // Delete Existing Flag
 export async function DELETE(request: Request) {
   try {
-    const { userId, postId } = await request.json();
-    
-    if (!userId || !postId) {
+    const data: unknown = await request.json();
+
+    if (!(typeof data === "object" && data !== null && "userId" in data && typeof data.userId === "string" && "postId" in data && typeof data.postId === "string")) {
       return new Response("Missing userId or postId", { status: 400 });
     }
 
-    return await db.transaction(async (tx) => {
+    const { userId, postId } = data;
 
+    return await db.transaction(async (tx) => {
       const existingFlag = await tx
         .select()
         .from(flags)
-        .where(and(eq(flags.userId, userId), eq(flags.postId, postId))).limit(1); // max one flag per user
+        .where(and(eq(flags.userId, userId), eq(flags.postId, postId)))
+        .limit(1); // max one flag per user
 
-    if (existingFlag.length === 0) {
-      return new Response("Flag not found", { status: 404 });       
-    }
+      if (existingFlag.length === 0) {
+        return new Response("Flag not found", { status: 404 });
+      }
 
-    // Delete the flag
-    await tx
-      .delete(flags)
-      .where(and(eq(flags.userId, userId), eq(flags.postId, postId)));
+      // Delete the flag
+      await tx
+        .delete(flags)
+        .where(and(eq(flags.userId, userId), eq(flags.postId, postId)));
 
+      await tx
+        .update(posts)
+        .set({ flagCount: sql`${posts.flagCount} - 1` })
+        .where(eq(posts.id, postId));
 
-    await tx
-      .update(posts)
-      .set({ flagCount: sql`${posts.flagCount} - 1` })
-      .where(eq(posts.id, postId));
-
-    return new Response("Flag deleted", { status: 200 });
-
-  });
-
+      return new Response("Flag deleted", { status: 200 });
+    });
   } catch (error) {
     console.error("Error deleting flag:", error);
     return new Response("Internal Server Error", { status: 500 });

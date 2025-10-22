@@ -339,8 +339,7 @@ export const flags = mysqlTable(
       .references(() => posts.id, { onDelete: "cascade" }),
     createdAt: d.timestamp().defaultNow().notNull(),
   }),
-  (t) => [
-    primaryKey({ columns: [t.userId, t.postId] })], // max one flag per user per post
+  (t) => [primaryKey({ columns: [t.userId, t.postId] })], // max one flag per user per post
 );
 
 export const flagRelations = relations(flags, ({ one }) => ({
