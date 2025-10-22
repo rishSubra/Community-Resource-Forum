@@ -5,10 +5,18 @@ import { and, eq } from "drizzle-orm";
 // Insert New Flag
 export async function POST(request: Request) {
   try {
-
     const data: unknown = await request.json();
 
-    if (!(typeof data === "object" && data !== null && "userId" in data && typeof data.userId === "string" && "postId" in data && typeof data.postId === "string")) {
+    if (
+      !(
+        typeof data === "object" &&
+        data !== null &&
+        "userId" in data &&
+        typeof data.userId === "string" &&
+        "postId" in data &&
+        typeof data.postId === "string"
+      )
+    ) {
       return new Response("Missing userId or postId", { status: 400 });
     }
 
@@ -35,7 +43,7 @@ export async function POST(request: Request) {
 
       return new Response("Flag created", { status: 201 });
     });
-  } catch (error: unknown){
+  } catch (error: unknown) {
     // Detect duplicate key errors specifically
 
     console.error("Error creating flag:", error);
@@ -48,7 +56,16 @@ export async function DELETE(request: Request) {
   try {
     const data: unknown = await request.json();
 
-    if (!(typeof data === "object" && data !== null && "userId" in data && typeof data.userId === "string" && "postId" in data && typeof data.postId === "string")) {
+    if (
+      !(
+        typeof data === "object" &&
+        data !== null &&
+        "userId" in data &&
+        typeof data.userId === "string" &&
+        "postId" in data &&
+        typeof data.postId === "string"
+      )
+    ) {
       return new Response("Missing userId or postId", { status: 400 });
     }
 
