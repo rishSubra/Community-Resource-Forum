@@ -1,16 +1,6 @@
 Reading schema files:
 /Users/rayanbatada/Desktop/codes/Current/devdogs/Community-Resource-Forum/src/server/db/schema.ts
 
-{
-  column: 2,
-  file: '/Users/rayanbatada/Desktop/codes/Current/devdogs/Community-Resource-Forum/src/server/db/schema.ts',
-  length: 5,
-  line: 69,
-  lineText: '  flags: many(flags),',
-  namespace: '',
-  suggestion: ''
-}
-Duplicate key "flags" in object literal
 CREATE TABLE `commentVote` (
 	`userId` varchar(255) NOT NULL,
 	`commentId` varchar(255) NOT NULL,
