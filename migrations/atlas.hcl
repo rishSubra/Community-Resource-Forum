@@ -19,3 +19,12 @@ env "local" {
     dir = "file://atlas/migrations"
   }
 }
+
+env "remote" {
+  schema {
+    src = data.external_schema.drizzle.url
+  }
+  migration {
+    dir = "file://atlas/migrations"
+  }
+}
