@@ -40,4 +40,4 @@ jobs:
           pnpm db:generate --auto-approve
         env:
           ENV_CONFIG: ${{ (env.REF == 'main' && '--environment=production') || format('--environment=preview --git-branch={0}', env.REF) }}
-          BUILD_CONFIG:  ${{ (env.REF == 'main' && '--prod') || ' ' }}
+          BUILD_CONFIG: ${{ (env.REF == 'main' && '--prod') || ' ' }}
