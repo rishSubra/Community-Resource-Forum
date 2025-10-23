@@ -25,7 +25,7 @@
     "prettier:fix": "prettier -w .",
     "preview": "next build && next start",
     "start": "next start",
-    "sync-upstream-main": "bash -c 'git checkout $0 && git pull upstream main && git pull upstream main $1 && git push upstream $0'",
+    "sync-upstream-main": "bash -c 'git checkout $0 && git pull upstream $0 && git pull upstream main $1 && git push upstream $0'",
     "typecheck": "tsc --noEmit",
     "typegen": "next typegen"
   },
