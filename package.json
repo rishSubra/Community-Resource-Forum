@@ -25,7 +25,7 @@
     "prettier:fix": "prettier -w .",
     "preview": "next build && next start",
     "start": "next start",
-    "sync-upstream": "git fetch && git branch | grep -Po '\\Kfeature/.*' | xargs -i sh -c 'git checkout {} && git pull upstream main && git push upstream {} --no-rebase'",
+    "sync-upstream-main": "bash -c 'git checkout $0 && git pull upstream $0 && git pull upstream main $1 && git push upstream $0'",
     "typecheck": "tsc --noEmit",
     "typegen": "next typegen"
   },
