@@ -1,6 +1,6 @@
 import { db } from "~/server/db";
-import { flags } from "~/server/db/schema";
-import { and, eq } from "drizzle-orm";
+import { flags, posts } from "~/server/db/schema";
+import { and, eq, sql } from "drizzle-orm";
 
 // Insert New Flag
 export async function POST(request: Request) {
