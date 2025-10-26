@@ -1,5 +1,5 @@
 Reading schema files:
-/home/sloan/DevDogs-UGA/Community-Resource-Forum/src/server/db/schema.ts
+C:\Users\nanda\Documents\GitHub\Community-Resource-Forum\src\server\db\schema.ts
 
 CREATE TABLE `commentVote` (
 	`userId` varchar(255) NOT NULL,
@@ -69,6 +69,10 @@ CREATE TABLE `profile` (
 	`id` varchar(255) NOT NULL,
 	`type` enum('user','organization') NOT NULL,
 	`name` varchar(255) NOT NULL,
+	`bio` varchar(255),
+	`linkedin` varchar(255),
+	`github` varchar(255),
+	`personalSite` varchar(255),
 	`image` varchar(255),
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp ON UPDATE CURRENT_TIMESTAMP,
