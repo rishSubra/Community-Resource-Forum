@@ -208,7 +208,7 @@ export const profiles = mysqlTable("profile", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
   type: d.mysqlEnum(["user", "organization"]).notNull(),
   name: d.varchar({ length: 255 }).notNull(),
-  bio: d.varchar({ length: 255 }),
+  bio: d.text({}),
   linkedin: d.varchar({ length: 255 }),
   github: d.varchar({ length: 255 }),
   personalSite: d.varchar({ length: 255 }),

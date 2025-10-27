@@ -1,2 +1,0 @@
-//currently working on this! this page will be almost identical to the personal profile page but will be used anytime the
-//user clicks on a profile that IS NOT their own. TLDR: personal profile view that does not contain an edit button.

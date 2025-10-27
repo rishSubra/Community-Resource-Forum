@@ -1,14 +1,39 @@
 import Link from "next/link";
 import { db } from "~/server/db";
-import { profiles, users, posts } from "~/server/db/schema";
+import { profiles, posts } from "~/server/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { getSessionUser } from "~/server/auth";
+import { notFound } from "next/navigation";
 
 //This view is only visibile to each user for their own profile, as it contains the special "edit" button that actually
-//allows them to edit their own profile.
+//allows them to edit their own
 
-export default async function ProfilePage() {
-  const session = await getSessionUser();
+export default async function ProfilePage({params}: {params: Promise <{ profileId: string}>}) {
+   const session = await getSessionUser({
+    with: {
+      profile: {
+        with: {
+          events: true,
+        },
+      },
+      organizations: {
+        with: {
+          organization: {
+            with: {
+              events: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  const {profileId} = await params;
+
+  const isSignedIn = session && (profileId === session.userId ||
+        session.user.organizations.some(
+          (org) => org.organizationId === profileId && org.role !== "member",
+        ))
+       
 
   if (!session) {
     return (
@@ -21,29 +46,15 @@ export default async function ProfilePage() {
     );
   }
 
-  const userResult = await db
-    .select({
-      profile: profiles,
-      user: users,
-    })
-    .from(users)
-    .innerJoin(profiles, eq(profiles.id, users.id))
-    .where(eq(users.id, session.userId))
+  const [profile] = await db
+    .select()
+    .from(profiles)
+    .where(eq(profiles.id, profileId))
     .limit(1);
 
-  const data = userResult[0];
-  if (!data) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-xl font-semibold mb-4">Profile not found.</h1>
-        <Link href="/" className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">
-          Go Home
-        </Link>
-      </div>
-    );
+  if (!profile) {
+    notFound();
   }
-
-  const { profile, user } = data;
 
   const postsResult = await db
     .select()
@@ -65,7 +76,6 @@ export default async function ProfilePage() {
             )}
             <h1 className="text-2xl font-semibold">{profile.name}</h1>
             <p className="text-gray-600 text-sm mb-2">{profile.type}</p>
-            <p className="text-gray-700 mb-4">{user.email}</p>
             {profile.bio && <p className="text-gray-700 mb-4 whitespace-pre-wrap">{profile.bio}</p>}
             <div className="space-y-2 text-sm">
               {profile.linkedin && (
@@ -93,11 +103,11 @@ export default async function ProfilePage() {
                 </p>
               )}
             </div>
-            <div className="mt-6">
-              <Link href="/profile/personal_edit" className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">
+            {isSignedIn && (<div className="mt-6">
+              <Link href={`/profile/${profileId}/edit`} className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">
                 Edit Profile
               </Link>
-            </div>
+            </div>)}
           </div>
         </div>
 

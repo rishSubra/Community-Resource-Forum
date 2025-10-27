@@ -43,7 +43,7 @@ export default async function Navigation() {
             >
               <Dropdown.Item asChild>
                 <Link
-                  href="/profile/personal_view"
+                  href={`/profile/${session.userId}`}
                   className="flex items-center gap-3 py-1 pr-6 pl-3 transition-colors hover:bg-gray-200"
                 >
                   <PiUser />

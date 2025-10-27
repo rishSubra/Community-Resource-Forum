@@ -1,42 +1,40 @@
-import { db } from "~/server/db";
-import { profiles, users } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
 import { getSessionUser } from "~/server/auth";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 //This is the form field page where users are redirected to to edit their profiles.
 
-export default async function EditProfilePage() {
-  const session = await getSessionUser();
+export default async function EditProfilePage({params}: {params: Promise <{ profileId: string}>}) {
+  const session = await getSessionUser({
+    with: {
+      profile: {
+        with: {
+          events: true,
+        },
+      },
+      organizations: {
+        with: {
+          organization: {
+            with: {
+              events: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  const {profileId} = await params;
 
-  if (!session) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-xl font-semibold mb-4">You must be signed in</h1>
-        <Link href="/" className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">Go Home</Link>
-      </div>
-    );
+  const profile = session && (profileId === session.userId ? session.user.profile :
+        session.user.organizations.find(
+          (org) => org.organizationId === profileId && org.role !== "member",
+        )?.organization)
+
+  if (!profile) {
+    notFound();
   }
 
-  const userResult = await db
-    .select({ profile: profiles, user: users })
-    .from(users)
-    .innerJoin(profiles, eq(profiles.id, users.id))
-    .where(eq(users.id, session.userId))
-    .limit(1);
-
-  const data = userResult[0];
-  if (!data) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-xl font-semibold mb-4">Profile not found.</h1>
-        <Link href="/" className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">Go Home</Link>
-      </div>
-    );
-  }
-
-  const { profile } = data;
-
+    
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
       <h1 className="text-2xl font-semibold mb-6">Edit Profile</h1>
@@ -68,7 +66,7 @@ export default async function EditProfilePage() {
         </div>
         <div className="flex items-center gap-3">
           <button type="submit" className="rounded-md bg-sky-700 px-4 py-2 text-white hover:bg-sky-600">Save</button>
-          <Link href="/profile" className="text-sm text-gray-600 hover:underline">Cancel</Link>
+          <Link href={`/profile/${profileId}`} className="text-sm text-gray-600 hover:underline">Cancel</Link>
         </div>
       </form>
     </div>
