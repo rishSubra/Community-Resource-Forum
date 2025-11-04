@@ -37,7 +37,8 @@ export const posts = mysqlTable(
   "post",
   (d) => ({
     id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
-    content: d.text(),
+    content: d.text(), // HTML content
+    textContent: d.text(),
     authorId: d
       .varchar({ length: 255 })
       .notNull()
@@ -208,6 +209,10 @@ export const profiles = mysqlTable("profile", (d) => ({
   id: d.varchar({ length: 255 }).primaryKey().$defaultFn(createId),
   type: d.mysqlEnum(["user", "organization"]).notNull(),
   name: d.varchar({ length: 255 }).notNull(),
+  bio: d.text({}),
+  linkedin: d.varchar({ length: 255 }),
+  github: d.varchar({ length: 255 }),
+  personalSite: d.varchar({ length: 255 }),
   image: d.varchar({ length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").onUpdateNow(),
