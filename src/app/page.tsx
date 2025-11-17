@@ -15,6 +15,7 @@ import ShareDropdown from "~/components/ShareDropdown";
 import VoteButton from "~/components/VoteButton";
 import formatEventTime from "~/lib/formatEventTime";
 import { getSessionUser } from "~/server/auth";
+import { SearchBar } from "~/components/SearchBar";
 import { db } from "~/server/db";
 import {
   events,
@@ -46,7 +47,7 @@ export default async function HomePage({
 
     return [];
   });
-
+  
   const tagsResult =
     tagParam.length > 0
       ? await db
@@ -112,7 +113,11 @@ export default async function HomePage({
     );
 
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-6 py-6">
+    <>
+      <div className="flex justify-end px-6 py-6">
+        <SearchBar />
+      </div>
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-6 pb-6">
       {tagsResult.length > 0 && (
         <h1 className="flex flex-wrap items-center gap-1.5">
           Showing{" "}
@@ -265,5 +270,6 @@ export default async function HomePage({
         </p>
       )}
     </div>
+    </>
   );
 }
