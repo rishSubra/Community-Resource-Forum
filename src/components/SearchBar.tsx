@@ -41,7 +41,7 @@ export function SearchBar() {
         throw new Error("Search failed");
       }
 
-      const data: SearchResponse = await response.json();
+      const data = (await response.json()) as SearchResponse;
       setResults(data.results);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -108,7 +108,7 @@ export function SearchBar() {
 
       {!isLoading && results.length === 0 && query && !error && (
         <div style={{ padding: "20px", textAlign: "center", color: "#666" }}>
-          No results found for "{query}"
+          No results found for &quot;{query}&quot;
         </div>
       )}
     </div>
