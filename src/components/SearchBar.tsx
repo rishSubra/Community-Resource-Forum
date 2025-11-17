@@ -52,7 +52,10 @@ export function SearchBar() {
 
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
+      >
         <input
           type="text"
           value={query}
@@ -85,18 +88,42 @@ export function SearchBar() {
       </form>
 
       {error && (
-        <div style={{ padding: "15px", backgroundColor: "#fee", border: "1px solid #fcc", borderRadius: "4px", marginBottom: "20px", color: "#c00" }}>
+        <div
+          style={{
+            padding: "15px",
+            backgroundColor: "#fee",
+            border: "1px solid #fcc",
+            borderRadius: "4px",
+            marginBottom: "20px",
+            color: "#c00",
+          }}
+        >
           Error: {error}
         </div>
       )}
 
       {results.length > 0 && (
         <div>
-          <h2 style={{ fontSize: "20px", fontWeight: "bold", marginBottom: "15px" }}>
+          <h2
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              marginBottom: "15px",
+            }}
+          >
             Found {results.length} result{results.length !== 1 ? "s" : ""}
           </h2>
           {results.map((post) => (
-            <div key={post.id} style={{ padding: "15px", border: "1px solid #ddd", borderRadius: "4px", marginBottom: "10px", backgroundColor: "#f9f9f9" }}>
+            <div
+              key={post.id}
+              style={{
+                padding: "15px",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                marginBottom: "10px",
+                backgroundColor: "#f9f9f9",
+              }}
+            >
               <p style={{ margin: "0 0 10px 0" }}>{post.content}</p>
               <div style={{ fontSize: "14px", color: "#666" }}>
                 Score: {post.score} | Comments: {post.commentCount}
